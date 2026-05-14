@@ -8,3 +8,11 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Java / Spring Boot
+backend/target/
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo

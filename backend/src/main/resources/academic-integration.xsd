@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:simpleType name="collegeCode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="A"/>
+      <xs:enumeration value="B"/>
+      <xs:enumeration value="C"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="studentType">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="college" type="collegeCode"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="gender" type="xs:string"/>
+      <xs:element name="major" type="xs:string"/>
+      <xs:element name="grade" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="courseType">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="college" type="collegeCode"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="credits" type="xs:decimal"/>
+      <xs:element name="teacher" type="xs:string"/>
+      <xs:element name="shared" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="enrollmentType">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="studentCollege" type="collegeCode"/>
+      <xs:element name="studentId" type="xs:string"/>
+      <xs:element name="courseCollege" type="collegeCode"/>
+      <xs:element name="courseId" type="xs:string"/>
+      <xs:element name="enrolledAt" type="xs:date"/>
+      <xs:element name="status" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="students">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="student" type="studentType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="courses">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="course" type="courseType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="enrollments">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="enrollment" type="enrollmentType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
