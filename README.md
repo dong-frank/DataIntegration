@@ -1,6 +1,4 @@
-# 教务数据集成系统
-
-本仓库是小组作业第一阶段框架：React 前端 + Spring Boot 后端 + XML 数据集成契约 + 三院数据库脚本模板。
+# 数据集成
 
 ## 技术栈
 
@@ -10,12 +8,6 @@
 - 集成方式：学院适配器导出/导入统一 XML，集成服务器负责共享课程、跨院选课、退课和统计。
 
 ## 环境准备
-
-本机使用 SDKMAN 管理 Java 和 Maven 时，先执行：
-
-```bash
-source ~/.sdkman/bin/sdkman-init.sh
-```
 
 确认版本：
 
@@ -30,7 +22,6 @@ npm -v
 
 ```bash
 cd backend
-source ~/.sdkman/bin/sdkman-init.sh
 mvn spring-boot:run
 ```
 
@@ -63,27 +54,3 @@ npm run dev
 | `college-c` | `password` | 学院 C |
 | `integration-admin` | `password` | 集成服务器管理员 |
 
-## 测试
-
-后端：
-
-```bash
-cd backend
-source ~/.sdkman/bin/sdkman-init.sh
-mvn test
-```
-
-前端：
-
-```bash
-cd frontend
-npm test
-npm run build
-```
-
-## 作业文档
-
-- 分工计划：`docs/分工计划.md`
-- 流程图草稿：`docs/流程图草稿.md`
-- 数据库说明：`database/README.md`
-- XML 契约：`backend/src/main/resources/academic-integration.xsd`
