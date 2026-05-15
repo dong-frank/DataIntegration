@@ -53,5 +53,3 @@ npm run dev
 | `college-b` | `password` | 学院 B |
 | `college-c` | `password` | 学院 C |
 | `integration-admin` | `password` | 集成服务器管理员 |
-
-| 成员 2 | 学院 A / SQL Server | 学院 A 表结构、初始化数据、A 适配器准备 | `database/sqlserver/init.sql`；A 学院字段映射说明 |
