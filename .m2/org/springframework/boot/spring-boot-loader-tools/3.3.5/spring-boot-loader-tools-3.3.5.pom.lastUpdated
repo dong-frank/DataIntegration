@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Sun May 17 22:07:44 CST 2026
+https\://maven.aliyun.com/nexus/content/groups/public/.error=Could not transfer artifact org.springframework.boot\:spring-boot-loader-tools\:pom\:3.3.5 from/to alimaven (https\://maven.aliyun.com/nexus/content/groups/public/)\: F\:\\shujujicheng\\DataIntegration\\.m2\\org\\springframework\\boot\\spring-boot-loader-tools\\3.3.5\\spring-boot-loader-tools-3.3.5.pom.5382502587195127132.tmp.8951409958161706380.tmp
+@default-alimaven-https\://maven.aliyun.com/nexus/content/groups/public/.lastUpdated=1779026864579

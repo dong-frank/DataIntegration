@@ -1,44 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-  <xs:simpleType name="collegeCode">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="A"/>
-      <xs:enumeration value="B"/>
-      <xs:enumeration value="C"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:complexType name="studentType">
     <xs:sequence>
       <xs:element name="id" type="xs:string"/>
-      <xs:element name="college" type="collegeCode"/>
       <xs:element name="name" type="xs:string"/>
-      <xs:element name="gender" type="xs:string"/>
+      <xs:element name="sex" type="xs:string"/>
       <xs:element name="major" type="xs:string"/>
-      <xs:element name="grade" type="xs:int"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="courseType">
+  <xs:complexType name="classType">
     <xs:sequence>
       <xs:element name="id" type="xs:string"/>
-      <xs:element name="college" type="collegeCode"/>
       <xs:element name="name" type="xs:string"/>
-      <xs:element name="credits" type="xs:decimal"/>
+      <xs:element name="time" type="xs:unsignedByte"/>
+      <xs:element name="score" type="xs:unsignedByte"/>
       <xs:element name="teacher" type="xs:string"/>
-      <xs:element name="shared" type="xs:boolean"/>
+      <xs:element name="location" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="enrollmentType">
+  <xs:complexType name="choiceType">
     <xs:sequence>
-      <xs:element name="id" type="xs:string"/>
-      <xs:element name="studentCollege" type="collegeCode"/>
-      <xs:element name="studentId" type="xs:string"/>
-      <xs:element name="courseCollege" type="collegeCode"/>
-      <xs:element name="courseId" type="xs:string"/>
-      <xs:element name="enrolledAt" type="xs:date"/>
-      <xs:element name="status" type="xs:string"/>
+      <xs:element name="sid" type="xs:string"/>
+      <xs:element name="cid" type="xs:string"/>
+      <xs:element name="score" type="xs:unsignedByte"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -50,18 +36,18 @@
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="courses">
+  <xs:element name="classes">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="course" type="courseType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="class" type="classType" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="enrollments">
+  <xs:element name="choices">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="enrollment" type="enrollmentType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="choice" type="choiceType" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

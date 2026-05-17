@@ -1,0 +1,53 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.example:data-integration-backend >----------------
+[INFO] Building data-integration-backend 0.1.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.3.5:run (default-cli) > test-compile @ data-integration-backend >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ data-integration-backend ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ data-integration-backend ---
+[WARNING]  Parameter 'compilerVersion' (user property 'maven.compiler.compilerVersion') is deprecated: This parameter is no longer evaluated by the underlying compilers, instead the actual version of the javac binary is automatically retrieved.
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ data-integration-backend ---
+[INFO] skip non existing resourceDirectory F:\shujujicheng\DataIntegration\backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ data-integration-backend ---
+[WARNING]  Parameter 'compilerVersion' (user property 'maven.compiler.compilerVersion') is deprecated: This parameter is no longer evaluated by the underlying compilers, instead the actual version of the javac binary is automatically retrieved.
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:3.3.5:run (default-cli) < test-compile @ data-integration-backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.3.5:run (default-cli) @ data-integration-backend ---
+Downloading from alimaven: https://maven.aliyun.com/nexus/content/groups/public/org/springframework/boot/spring-boot-buildpack-platform/3.3.5/spring-boot-buildpack-platform-3.3.5.pom
+Progress (1): 3.2 kB                    Downloading from alimaven: https://maven.aliyun.com/nexus/content/groups/public/org/springframework/boot/spring-boot-loader-tools/3.3.5/spring-boot-loader-tools-3.3.5.pom
+Progress (1): 2.2 kB                    Downloading from alimaven: https://maven.aliyun.com/nexus/content/groups/public/org/apache/maven/shared/maven-common-artifact-filters/3.3.2/maven-common-artifact-filters-3.3.2.pom
+Progress (1): 5.3 kB                    Downloading from alimaven: https://maven.aliyun.com/nexus/content/groups/public/io/micrometer/micrometer-observation/1.12.11/micrometer-observation-1.12.11.pom
+Progress (1): 3.9 kB                    Downloading from alimaven: https://maven.aliyun.com/nexus/content/groups/public/org/apache/maven/plugins/maven-shade-plugin/3.5.0/maven-shade-plugin-3.5.0.pom
+Progress (1): 7.3/12 kBProgress (1): 12 kB                       [INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.255 s
+[INFO] Finished at: 2026-05-17T22:07:44+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.3.5:run (default-cli) on project data-integration-backend: Execution default-cli of goal org.springframework.boot:spring-boot-maven-plugin:3.3.5:run failed: Plugin org.springframework.boot:spring-boot-maven-plugin:3.3.5 or one of its dependencies could not be resolved:
+[ERROR] 	Failed to read artifact descriptor for org.springframework.boot:spring-boot-buildpack-platform:jar:3.3.5
+[ERROR] 	Failed to read artifact descriptor for org.springframework.boot:spring-boot-loader-tools:jar:3.3.5
+[ERROR] 	Failed to read artifact descriptor for org.apache.maven.shared:maven-common-artifact-filters:jar:3.3.2
+[ERROR] 	Failed to read artifact descriptor for io.micrometer:micrometer-observation:jar:1.12.11
+[ERROR] 	Failed to read artifact descriptor for org.apache.maven.plugins:maven-shade-plugin:jar:3.5.0
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginResolutionException

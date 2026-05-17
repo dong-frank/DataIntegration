@@ -76,8 +76,10 @@ export function IntegrationPage() {
             { key: 'college', label: '来源', render: (course) => `学院${course.college}` },
             { key: 'id', label: '课程号', render: (course) => course.id },
             { key: 'name', label: '课程名', render: (course) => course.name },
+            { key: 'hours', label: '课时', render: (course) => course.hours },
             { key: 'credits', label: '学分', render: (course) => course.credits },
             { key: 'teacher', label: '教师', render: (course) => course.teacher },
+            { key: 'location', label: '地点', render: (course) => course.location },
           ]}
         />
       </section>

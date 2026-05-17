@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Sun May 17 22:07:44 CST 2026
+https\://maven.aliyun.com/nexus/content/groups/public/.error=Could not transfer artifact org.apache.maven.plugins\:maven-shade-plugin\:pom\:3.5.0 from/to alimaven (https\://maven.aliyun.com/nexus/content/groups/public/)\: F\:\\shujujicheng\\DataIntegration\\.m2\\org\\apache\\maven\\plugins\\maven-shade-plugin\\3.5.0\\maven-shade-plugin-3.5.0.pom.5058528317079727967.tmp.2664267504977434452.tmp
+@default-alimaven-https\://maven.aliyun.com/nexus/content/groups/public/.lastUpdated=1779026864636

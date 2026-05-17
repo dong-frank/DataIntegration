@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Sun May 17 22:07:44 CST 2026
+https\://maven.aliyun.com/nexus/content/groups/public/.error=Could not transfer artifact org.springframework.boot\:spring-boot-buildpack-platform\:pom\:3.3.5 from/to alimaven (https\://maven.aliyun.com/nexus/content/groups/public/)\: F\:\\shujujicheng\\DataIntegration\\.m2\\org\\springframework\\boot\\spring-boot-buildpack-platform\\3.3.5\\spring-boot-buildpack-platform-3.3.5.pom.15179982205120532706.tmp.4084098553806250877.tmp
+@default-alimaven-https\://maven.aliyun.com/nexus/content/groups/public/.lastUpdated=1779026864558

@@ -22,9 +22,9 @@ public class XmlExportService {
 
     public String export(CollegeCode college, String type) {
         Object document = switch (type) {
-            case "students" -> new StudentXmlDocument(dataService.students(college));
-            case "courses" -> new CourseXmlDocument(dataService.courses(college));
-            case "enrollments" -> new EnrollmentXmlDocument(dataService.enrollments(college));
+            case "students" -> StudentXmlDocument.from(dataService.students(college));
+            case "courses" -> CourseXmlDocument.from(dataService.courses(college));
+            case "enrollments" -> EnrollmentXmlDocument.from(dataService.enrollments(college));
             default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不支持的 XML 类型: " + type);
         };
 

@@ -2,6 +2,7 @@ package com.example.dataintegration;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,10 +10,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.StringReader;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.SchemaFactory;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -69,20 +77,41 @@ class ApiContractTest {
 
     @Test
     void xmlExportEndpointReturnsXmlForStudentsCoursesAndEnrollments() throws Exception {
-        mockMvc.perform(get("/api/xml/A/students"))
+        String studentXml = mockMvc.perform(get("/api/xml/A/students"))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
-            .andExpect(content().string(containsString("<students>")));
+            .andExpect(content().string(containsString("<students>")))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
 
-        mockMvc.perform(get("/api/xml/A/courses"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
-            .andExpect(content().string(containsString("<courses>")));
+        assertTrue(studentXml.contains("<sex>"));
+        validateAgainstAcademicSchema(studentXml);
 
-        mockMvc.perform(get("/api/xml/A/enrollments"))
+        String courseXml = mockMvc.perform(get("/api/xml/A/courses"))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
-            .andExpect(content().string(containsString("<enrollments>")));
+            .andExpect(content().string(containsString("<classes>")))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        assertTrue(courseXml.contains("<time>"));
+        assertTrue(courseXml.contains("<location>"));
+        validateAgainstAcademicSchema(courseXml);
+
+        String enrollmentXml = mockMvc.perform(get("/api/xml/A/enrollments"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
+            .andExpect(content().string(containsString("<choices>")))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        assertTrue(enrollmentXml.contains("<sid>"));
+        assertTrue(enrollmentXml.contains("<cid>"));
+        assertTrue(enrollmentXml.contains("<score>"));
+        validateAgainstAcademicSchema(enrollmentXml);
     }
 
     @Test
@@ -90,5 +119,14 @@ class ApiContractTest {
         mockMvc.perform(delete("/api/integration/enrollments/A-E0001"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.withdrawn").value(true));
+    }
+
+    private void validateAgainstAcademicSchema(String xml) throws Exception {
+        try (var inputStream = new ClassPathResource("academic-integration.xsd").getInputStream()) {
+            var schemaSource = new StreamSource(inputStream);
+            schemaSource.setSystemId("classpath:academic-integration.xsd");
+            var schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource);
+            schema.newValidator().validate(new StreamSource(new StringReader(xml)));
+        }
     }
 }
