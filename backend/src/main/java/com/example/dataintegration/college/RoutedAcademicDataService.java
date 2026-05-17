@@ -62,6 +62,13 @@ public class RoutedAcademicDataService implements AcademicDataService {
     @Override
     public EnrollmentRecord createEnrollment(EnrollmentCreateRequest request) {
         if (request.courseCollege() == CollegeCode.A) {
+            if (request.studentCollege() != CollegeCode.A) {
+                StudentRecord sourceStudent = students(request.studentCollege()).stream()
+                    .filter(student -> student.id().equals(request.studentId()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("未找到源学院学生: " + request.studentId()));
+                return collegeAService.createImportedEnrollment(request, sourceStudent);
+            }
             return collegeAService.createEnrollment(request);
         }
         return fallbackService.createEnrollment(request);

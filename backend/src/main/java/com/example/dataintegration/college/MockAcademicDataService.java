@@ -71,7 +71,8 @@ public class MockAcademicDataService implements AcademicDataService {
             request.courseCollege(),
             request.courseId(),
             LocalDate.now(),
-            "ACTIVE"
+            "ACTIVE",
+            "0"
         );
         target.add(record);
         return record;
@@ -93,7 +94,8 @@ public class MockAcademicDataService implements AcademicDataService {
                     record.courseCollege(),
                     record.courseId(),
                     record.enrolledAt(),
-                    "WITHDRAWN"
+                    "WITHDRAWN",
+                    record.score()
                 ));
                 return new WithdrawalResult(enrollmentId, true, entry.getKey());
             }
@@ -154,8 +156,10 @@ public class MockAcademicDataService implements AcademicDataService {
                     "%s-C%03d".formatted(college, i),
                     college,
                     COURSE_NAMES[i - 1],
+                    (int) ((2.0 + (i % 3)) * 16),
                     2.0 + (i % 3),
                     "%s教师%02d".formatted(college.getDisplayName(), i),
+                    "%s教学楼%03d".formatted(college.getDisplayName(), 100 + i),
                     i <= 6
                 ));
             }
@@ -172,7 +176,8 @@ public class MockAcademicDataService implements AcademicDataService {
                         college,
                         course.id(),
                         LocalDate.of(2026, 3, 1).plusDays(j),
-                        "ACTIVE"
+                        "ACTIVE",
+                        Integer.toString(70 + ((studentIndex + j) % 26))
                     ));
                 }
             }

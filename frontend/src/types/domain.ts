@@ -28,8 +28,10 @@ export interface CourseRecord {
   id: string;
   college: CollegeCode;
   name: string;
+  hours: number;
   credits: number;
   teacher: string;
+  location: string;
   shared: boolean;
 }
 
@@ -41,6 +43,7 @@ export interface EnrollmentRecord {
   courseId: string;
   enrolledAt: string;
   status: string;
+  score: string;
 }
 
 export interface CollegeStat {

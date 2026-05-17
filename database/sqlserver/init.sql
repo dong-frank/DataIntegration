@@ -21,6 +21,8 @@ IF OBJECT_ID(N'dbo.vw_adapter_courses', N'V') IS NOT NULL DROP VIEW dbo.vw_adapt
 IF OBJECT_ID(N'dbo.vw_adapter_students', N'V') IS NOT NULL DROP VIEW dbo.vw_adapter_students;
 GO
 
+IF OBJECT_ID(N'dbo.A_IMPORTED_SELECTION', N'U') IS NOT NULL DROP TABLE dbo.A_IMPORTED_SELECTION;
+IF OBJECT_ID(N'dbo.A_IMPORTED_STUDENT', N'U') IS NOT NULL DROP TABLE dbo.A_IMPORTED_STUDENT;
 IF OBJECT_ID(N'dbo.A_SELECTION', N'U') IS NOT NULL DROP TABLE dbo.A_SELECTION;
 IF OBJECT_ID(N'dbo.A_COURSE', N'U') IS NOT NULL DROP TABLE dbo.A_COURSE;
 IF OBJECT_ID(N'dbo.A_STUDENT', N'U') IS NOT NULL DROP TABLE dbo.A_STUDENT;
@@ -69,6 +71,36 @@ CREATE TABLE dbo.A_SELECTION (
         FOREIGN KEY (course_no) REFERENCES dbo.A_COURSE (course_no),
     CONSTRAINT FK_A_SELECTION_STUDENT
         FOREIGN KEY (student_no) REFERENCES dbo.A_STUDENT (student_no)
+);
+GO
+
+-- 跨院选课导入的外院学生信息
+CREATE TABLE dbo.A_IMPORTED_STUDENT (
+    source_college CHAR(1) NOT NULL,
+    student_no VARCHAR(12) NOT NULL,
+    student_name VARCHAR(40) NOT NULL,
+    gender_name VARCHAR(2) NOT NULL,
+    major_name VARCHAR(40) NOT NULL,
+    imported_on DATE NOT NULL CONSTRAINT DF_A_IMPORTED_STUDENT_IMPORTED_ON DEFAULT (CONVERT(DATE, GETDATE())),
+    CONSTRAINT PK_A_IMPORTED_STUDENT PRIMARY KEY (source_college, student_no),
+    CONSTRAINT CK_A_IMPORTED_STUDENT_SOURCE CHECK (source_college IN ('A', 'B', 'C'))
+);
+GO
+
+-- 跨院选课导入的选课信息
+CREATE TABLE dbo.A_IMPORTED_SELECTION (
+    course_no VARCHAR(8) NOT NULL,
+    source_college CHAR(1) NOT NULL,
+    student_no VARCHAR(12) NOT NULL,
+    score_text VARCHAR(3) NOT NULL CONSTRAINT DF_A_IMPORTED_SELECTION_SCORE DEFAULT ('0'),
+    enrolled_on DATE NOT NULL CONSTRAINT DF_A_IMPORTED_SELECTION_ENROLLED_ON DEFAULT (CONVERT(DATE, GETDATE())),
+    status_code VARCHAR(12) NOT NULL CONSTRAINT DF_A_IMPORTED_SELECTION_STATUS DEFAULT ('ACTIVE'),
+    CONSTRAINT PK_A_IMPORTED_SELECTION PRIMARY KEY (course_no, source_college, student_no),
+    CONSTRAINT FK_A_IMPORTED_SELECTION_COURSE
+        FOREIGN KEY (course_no) REFERENCES dbo.A_COURSE (course_no),
+    CONSTRAINT FK_A_IMPORTED_SELECTION_STUDENT
+        FOREIGN KEY (source_college, student_no) REFERENCES dbo.A_IMPORTED_STUDENT (source_college, student_no),
+    CONSTRAINT CK_A_IMPORTED_SELECTION_STATUS CHECK (status_code IN ('ACTIVE', 'WITHDRAWN'))
 );
 GO
 
@@ -145,6 +177,8 @@ GO
 
 CREATE INDEX IX_A_SELECTION_STUDENT_NO ON dbo.A_SELECTION (student_no);
 CREATE INDEX IX_A_SELECTION_COURSE_NO ON dbo.A_SELECTION (course_no);
+CREATE INDEX IX_A_IMPORTED_SELECTION_STUDENT_NO ON dbo.A_IMPORTED_SELECTION (student_no);
+CREATE INDEX IX_A_IMPORTED_SELECTION_COURSE_NO ON dbo.A_IMPORTED_SELECTION (course_no);
 GO
 
 CREATE VIEW dbo.vw_adapter_students
@@ -165,8 +199,10 @@ SELECT
     course_no AS id,
     'A' AS college,
     course_name AS name,
+    CAST(CAST(credit_text AS TINYINT) * 16 AS TINYINT) AS hours,
     CAST(credit_text AS DECIMAL(3, 1)) AS credits,
     teacher_name AS teacher,
+    teaching_place AS location,
     CAST(CASE WHEN shared_flag = 'Y' THEN 1 ELSE 0 END AS BIT) AS shared
 FROM dbo.A_COURSE;
 GO
@@ -180,8 +216,20 @@ SELECT
     'A' AS courseCollege,
     course_no AS courseId,
     DATEADD(DAY, ROW_NUMBER() OVER (ORDER BY student_no, course_no) - 1, CONVERT(DATE, '2026-03-01')) AS enrolledAt,
-    'ACTIVE' AS status
-FROM dbo.A_SELECTION;
+    'ACTIVE' AS status,
+    score_text AS score
+FROM dbo.A_SELECTION
+UNION ALL
+SELECT
+    CONCAT(course_no, '-', student_no) AS id,
+    source_college AS studentCollege,
+    student_no AS studentId,
+    'A' AS courseCollege,
+    course_no AS courseId,
+    enrolled_on AS enrolledAt,
+    status_code AS status,
+    score_text AS score
+FROM dbo.A_IMPORTED_SELECTION;
 GO
 
 SELECT

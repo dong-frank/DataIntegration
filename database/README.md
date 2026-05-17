@@ -10,6 +10,30 @@
 | 学院 B | Oracle | `oracle/init.sql` | 成员 3 |
 | 学院 C | MySQL | `mysql/init.sql` | 成员 4 |
 
+## 学院 A 适配视图迁移
+
+如果已经建过 `college_a` 数据库，拉取新版后看到类似错误：
+
+- `Invalid column name 'hours'`
+- `Invalid column name 'score'`
+
+说明 SQL Server 中的 `dbo.vw_adapter_courses` / `dbo.vw_adapter_enrollments`
+还是旧视图定义。不要为了这个直接重跑会清空数据的 `sqlserver/init.sql`，可以执行增量迁移：
+
+```bash
+docker cp database/sqlserver/migrate_20260517_adapter_views.sql college-sqlserver:/tmp/migrate_20260517_adapter_views.sql
+docker exec -it college-sqlserver \
+/opt/mssql-tools18/bin/sqlcmd \
+-S localhost \
+-U sa \
+-P 'DataInt_2026!' \
+-C \
+-i /tmp/migrate_20260517_adapter_views.sql
+```
+
+执行完成后，脚本末尾会分别查询 `vw_adapter_courses` 和
+`vw_adapter_enrollments` 的前 5 行，用于确认已经输出 `hours/location/score`。
+
 ## 数据量要求
 
 - 每个学院 50 名学生。
@@ -30,6 +54,8 @@ docker run \
   -e MSSQL_SA_PASSWORD='DataInt_2026!' \
   -p 1433:1433 \
   -d mcr.microsoft.com/mssql/server:2022-latest
+
+docker cp database/sqlserver/init.sql college-sqlserver:/tmp/init.sql
 
 docker exec -it college-sqlserver \
 /opt/mssql-tools18/bin/sqlcmd \

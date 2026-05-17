@@ -11,6 +11,8 @@ wheels/
 
 # Java / Spring Boot
 backend/target/
+backend/hs_err_pid*.log
+.m2/
 
 # Node / React
 frontend/node_modules/
