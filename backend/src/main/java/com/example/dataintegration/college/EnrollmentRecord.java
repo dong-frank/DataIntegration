@@ -9,6 +9,7 @@ public record EnrollmentRecord(
     CollegeCode courseCollege,
     String courseId,
     LocalDate enrolledAt,
-    String status
+    String status,
+    String score
 ) {
 }

@@ -34,7 +34,7 @@ public class SqlServerCollegeADataService {
 
     public List<CourseRecord> courses() {
         return jdbc.query("""
-            SELECT id, college, name, credits, teacher, shared
+            SELECT id, college, name, hours, credits, teacher, location, shared
             FROM dbo.vw_adapter_courses
             ORDER BY id
             """, courseMapper());
@@ -42,13 +42,15 @@ public class SqlServerCollegeADataService {
 
     public List<EnrollmentRecord> enrollments() {
         return jdbc.query("""
-            SELECT id, studentCollege, studentId, courseCollege, courseId, enrolledAt, status
+            SELECT id, studentCollege, studentId, courseCollege, courseId, enrolledAt, status, score
             FROM dbo.vw_adapter_enrollments
             ORDER BY id
             """, enrollmentMapper());
     }
 
     public EnrollmentRecord createEnrollment(EnrollmentCreateRequest request) {
+        assertCourseExists(request.courseId());
+        assertLocalStudentExists(request.studentId());
         jdbc.update(
             "INSERT INTO dbo.A_SELECTION (course_no, student_no, score_text) VALUES (?, ?, '0')",
             request.courseId(),
@@ -61,7 +63,46 @@ public class SqlServerCollegeADataService {
             CollegeCode.A,
             request.courseId(),
             LocalDate.now(),
-            "ACTIVE"
+            "ACTIVE",
+            "0"
+        );
+    }
+
+    public EnrollmentRecord createImportedEnrollment(EnrollmentCreateRequest request, StudentRecord sourceStudent) {
+        if (sourceStudent == null) {
+            throw new IllegalArgumentException("外院学生信息不能为空");
+        }
+        if (request.courseCollege() != CollegeCode.A) {
+            throw new IllegalArgumentException("当前服务仅处理学院 A 的落库");
+        }
+        if (!sourceStudent.id().equals(request.studentId())) {
+            throw new IllegalArgumentException("外院学生信息与选课请求不一致");
+        }
+
+        assertCourseExists(request.courseId());
+        upsertImportedStudent(sourceStudent);
+
+        jdbc.update(
+            """
+            INSERT INTO dbo.A_IMPORTED_SELECTION
+                (course_no, source_college, student_no, score_text, enrolled_on, status_code)
+            VALUES (?, ?, ?, '0', ?, 'ACTIVE')
+            """,
+            request.courseId(),
+            request.studentCollege().name(),
+            request.studentId(),
+            Date.valueOf(LocalDate.now())
+        );
+
+        return new EnrollmentRecord(
+            "%s-%s".formatted(request.courseId(), request.studentId()),
+            request.studentCollege(),
+            request.studentId(),
+            CollegeCode.A,
+            request.courseId(),
+            LocalDate.now(),
+            "ACTIVE",
+            "0"
         );
     }
 
@@ -72,6 +113,11 @@ public class SqlServerCollegeADataService {
         }
         int affectedRows = jdbc.update(
             "DELETE FROM dbo.A_SELECTION WHERE course_no = ? AND student_no = ?",
+            parts[0],
+            parts[1]
+        );
+        affectedRows += jdbc.update(
+            "DELETE FROM dbo.A_IMPORTED_SELECTION WHERE course_no = ? AND student_no = ?",
             parts[0],
             parts[1]
         );
@@ -94,8 +140,10 @@ public class SqlServerCollegeADataService {
             rs.getString("id"),
             CollegeCode.valueOf(rs.getString("college")),
             rs.getString("name"),
+            rs.getInt("hours"),
             rs.getDouble("credits"),
             rs.getString("teacher"),
+            rs.getString("location"),
             rs.getBoolean("shared")
         );
     }
@@ -108,7 +156,68 @@ public class SqlServerCollegeADataService {
             CollegeCode.valueOf(rs.getString("courseCollege")),
             rs.getString("courseId"),
             localDate(rs, "enrolledAt"),
-            rs.getString("status")
+            rs.getString("status"),
+            rs.getString("score")
+        );
+    }
+
+    private void assertCourseExists(String courseId) {
+        Integer count = jdbc.queryForObject(
+            "SELECT COUNT(*) FROM dbo.A_COURSE WHERE course_no = ?",
+            Integer.class,
+            courseId
+        );
+        if (count == null || count == 0) {
+            throw new IllegalArgumentException("学院 A 不存在课程: " + courseId);
+        }
+    }
+
+    private void assertLocalStudentExists(String studentId) {
+        Integer count = jdbc.queryForObject(
+            "SELECT COUNT(*) FROM dbo.A_STUDENT WHERE student_no = ?",
+            Integer.class,
+            studentId
+        );
+        if (count == null || count == 0) {
+            throw new IllegalArgumentException("学院 A 不存在学生: " + studentId);
+        }
+    }
+
+    private void upsertImportedStudent(StudentRecord sourceStudent) {
+        Integer count = jdbc.queryForObject(
+            "SELECT COUNT(*) FROM dbo.A_IMPORTED_STUDENT WHERE source_college = ? AND student_no = ?",
+            Integer.class,
+            sourceStudent.college().name(),
+            sourceStudent.id()
+        );
+        if (count != null && count > 0) {
+            jdbc.update(
+                """
+                UPDATE dbo.A_IMPORTED_STUDENT
+                SET student_name = ?, gender_name = ?, major_name = ?
+                WHERE source_college = ? AND student_no = ?
+                """,
+                sourceStudent.name(),
+                sourceStudent.gender(),
+                sourceStudent.major(),
+                sourceStudent.college().name(),
+                sourceStudent.id()
+            );
+            return;
+        }
+
+        jdbc.update(
+            """
+            INSERT INTO dbo.A_IMPORTED_STUDENT
+                (source_college, student_no, student_name, gender_name, major_name, imported_on)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            sourceStudent.college().name(),
+            sourceStudent.id(),
+            sourceStudent.name(),
+            sourceStudent.gender(),
+            sourceStudent.major(),
+            Date.valueOf(LocalDate.now())
         );
     }
 

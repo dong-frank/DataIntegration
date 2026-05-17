@@ -1,56 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-  
-  <!-- 学院代码枚举 -->
-  <xs:simpleType name="collegeCode">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="A"/>
-      <xs:enumeration value="B"/>
-      <xs:enumeration value="C"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <!-- ========== 学生统一格式（教材表3-14） ========== -->
   <xs:complexType name="studentType">
     <xs:sequence>
-      <xs:element name="id" type="xs:string"/>           <!-- 学号，maxLength=9 -->
-      <xs:element name="college" type="collegeCode"/>    <!-- 所属学院 -->
-      <xs:element name="name" type="xs:string"/>         <!-- 姓名，maxLength=40 -->
-      <xs:element name="gender" type="xs:string"/>       <!-- 性别 -->
-      <xs:element name="major" type="xs:string"/>        <!-- 专业，maxLength=40 -->
-      <xs:element name="grade" type="xs:positiveInteger"/> <!-- 年级 -->
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="sex" type="xs:string"/>
+      <xs:element name="major" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
-  <!-- ========== 课程统一格式（教材表3-13，补充课时） ========== -->
-  <xs:complexType name="courseType">
+  <xs:complexType name="classType">
     <xs:sequence>
-      <xs:element name="id" type="xs:string"/>           <!-- 课程编号，length=9 -->
-      <xs:element name="college" type="collegeCode"/>    <!-- 开课学院 -->
-      <xs:element name="name" type="xs:string"/>         <!-- 课程名称，maxLength=40 -->
-      <xs:element name="credits" type="xs:decimal"/>     <!-- 学分，maxInclusive=5 -->
-      <xs:element name="hours" type="xs:positiveInteger"/> <!-- 【新增】课时（教材表3-13: classtime） -->
-      <xs:element name="teacher" type="xs:string"/>      <!-- 授课教师，maxLength=20 -->
-      <xs:element name="location" type="xs:string"/>     <!-- 授课地点，maxLength=40 -->
-      <xs:element name="shared" type="xs:boolean"/>      <!-- 是否共享 -->
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="time" type="xs:unsignedByte"/>
+      <xs:element name="score" type="xs:unsignedByte"/>
+      <xs:element name="teacher" type="xs:string"/>
+      <xs:element name="location" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
-  <!-- ========== 选课统一格式（教材表3-15，补充成绩） ========== -->
-  <xs:complexType name="enrollmentType">
+  <xs:complexType name="choiceType">
     <xs:sequence>
-      <xs:element name="id" type="xs:string"/>           <!-- 选课记录唯一ID -->
-      <xs:element name="studentCollege" type="collegeCode"/> <!-- 学生所属学院 -->
-      <xs:element name="studentId" type="xs:string"/>    <!-- 学生学号 -->
-      <xs:element name="courseCollege" type="collegeCode"/> <!-- 课程所属学院 -->
-      <xs:element name="courseId" type="xs:string"/>     <!-- 课程编号 -->
-      <xs:element name="enrolledAt" type="xs:date"/>     <!-- 选课日期 -->
-      <xs:element name="score" type="xs:unsignedByte"/>  <!-- 【新增】成绩，maxInclusive=100 -->
-      <xs:element name="status" type="xs:string"/>       <!-- 状态：active/dropped/completed -->
+      <xs:element name="sid" type="xs:string"/>
+      <xs:element name="cid" type="xs:string"/>
+      <xs:element name="score" type="xs:unsignedByte"/>
     </xs:sequence>
   </xs:complexType>
 
-  <!-- 根元素定义 -->
   <xs:element name="students">
     <xs:complexType>
       <xs:sequence>
@@ -59,20 +36,19 @@
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="courses">
+  <xs:element name="classes">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="course" type="courseType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="class" type="classType" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="enrollments">
+  <xs:element name="choices">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="enrollment" type="enrollmentType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="choice" type="choiceType" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-
 </xs:schema>
