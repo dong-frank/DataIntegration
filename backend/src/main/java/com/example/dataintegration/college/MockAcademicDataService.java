@@ -19,7 +19,7 @@ import com.example.dataintegration.integration.WithdrawalResult;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MockAcademicDataService {
+public class MockAcademicDataService implements AcademicDataService {
 
     private static final String[] COURSE_NAMES = {
         "数据库系统", "数据集成", "软件工程", "计算机网络", "操作系统",
@@ -34,18 +34,22 @@ public class MockAcademicDataService {
         seed();
     }
 
+    @Override
     public List<StudentRecord> students(CollegeCode college) {
         return Collections.unmodifiableList(students.getOrDefault(college, List.of()));
     }
 
+    @Override
     public List<CourseRecord> courses(CollegeCode college) {
         return Collections.unmodifiableList(courses.getOrDefault(college, List.of()));
     }
 
+    @Override
     public List<EnrollmentRecord> enrollments(CollegeCode college) {
         return Collections.unmodifiableList(enrollments.getOrDefault(college, List.of()));
     }
 
+    @Override
     public List<CourseRecord> sharedCourses(Optional<CollegeCode> source) {
         return source
             .map(this::courses)
@@ -56,6 +60,7 @@ public class MockAcademicDataService {
             .toList();
     }
 
+    @Override
     public EnrollmentRecord createEnrollment(EnrollmentCreateRequest request) {
         List<EnrollmentRecord> target = enrollments.computeIfAbsent(request.courseCollege(), key -> new ArrayList<>());
         String id = "%s-X%04d".formatted(request.courseCollege(), target.size() + 1);
@@ -72,6 +77,7 @@ public class MockAcademicDataService {
         return record;
     }
 
+    @Override
     public WithdrawalResult withdraw(String enrollmentId) {
         for (Map.Entry<CollegeCode, List<EnrollmentRecord>> entry : enrollments.entrySet()) {
             List<EnrollmentRecord> records = entry.getValue();
@@ -95,6 +101,7 @@ public class MockAcademicDataService {
         return new WithdrawalResult(enrollmentId, false, null);
     }
 
+    @Override
     public StatsSummary stats() {
         List<StatsSummary.CollegeStat> collegeStats = List.of(CollegeCode.values()).stream()
             .map(college -> new StatsSummary.CollegeStat(

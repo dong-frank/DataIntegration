@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.example.dataintegration.college.CollegeCode;
 import com.example.dataintegration.college.CourseRecord;
 import com.example.dataintegration.college.EnrollmentRecord;
-import com.example.dataintegration.college.MockAcademicDataService;
+import com.example.dataintegration.college.AcademicDataService;
 import com.example.dataintegration.common.ApiResponse;
 
 import jakarta.validation.Valid;
@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/integration")
 public class IntegrationController {
 
-    private final MockAcademicDataService dataService;
+    private final AcademicDataService dataService;
 
-    public IntegrationController(MockAcademicDataService dataService) {
+    public IntegrationController(AcademicDataService dataService) {
         this.dataService = dataService;
     }
 
