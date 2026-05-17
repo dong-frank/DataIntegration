@@ -53,4 +53,3 @@ npm run dev
 | `college-b` | `password` | 学院 B |
 | `college-c` | `password` | 学院 C |
 | `integration-admin` | `password` | 集成服务器管理员 |
-
