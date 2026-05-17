@@ -1,7 +1,7 @@
 package com.example.dataintegration.xml;
 
+import com.example.dataintegration.college.AcademicDataService;
 import com.example.dataintegration.college.CollegeCode;
-import com.example.dataintegration.college.MockAcademicDataService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
@@ -12,10 +12,10 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class XmlExportService {
 
-    private final MockAcademicDataService dataService;
+    private final AcademicDataService dataService;
     private final XmlMapper xmlMapper = new XmlMapper();
 
-    public XmlExportService(MockAcademicDataService dataService) {
+    public XmlExportService(AcademicDataService dataService) {
         this.dataService = dataService;
         this.xmlMapper.findAndRegisterModules();
     }

@@ -24,7 +24,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest
+@SpringBootTest(properties = "app.data-mode=mock")
 @AutoConfigureMockMvc
 class ApiContractTest {
 

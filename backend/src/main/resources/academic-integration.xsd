@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <!-- PDF 统一学生格式 -->
   <xs:complexType name="studentType">
     <xs:sequence>
       <xs:element name="id" type="xs:string"/>
@@ -9,6 +10,7 @@
     </xs:sequence>
   </xs:complexType>
 
+  <!-- PDF 统一课程格式 -->
   <xs:complexType name="classType">
     <xs:sequence>
       <xs:element name="id" type="xs:string"/>
@@ -20,6 +22,7 @@
     </xs:sequence>
   </xs:complexType>
 
+  <!-- PDF 统一选课格式 -->
   <xs:complexType name="choiceType">
     <xs:sequence>
       <xs:element name="sid" type="xs:string"/>

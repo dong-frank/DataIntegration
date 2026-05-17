@@ -20,4 +20,21 @@
 
 ## 环境变量
 
-后端读取 `backend/.env.example` 中的 JDBC 配置。正式运行时复制为本机环境变量或 IDE 运行配置。
+后端读取 `backend/.env` 中的 JDBC 配置。正式运行时复制为本机环境变量或 IDE 运行配置。
+
+
+docker run \
+  --platform linux/amd64 \
+  --name college-sqlserver \
+  -e ACCEPT_EULA=Y \
+  -e MSSQL_SA_PASSWORD='DataInt_2026!' \
+  -p 1433:1433 \
+  -d mcr.microsoft.com/mssql/server:2022-latest
+
+docker exec -it college-sqlserver \
+/opt/mssql-tools18/bin/sqlcmd \
+-S localhost \
+-U sa \
+-P 'DataInt_2026!' \
+-C \
+-i /tmp/init.sql

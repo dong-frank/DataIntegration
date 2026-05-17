@@ -4,8 +4,11 @@ server:
 spring:
   application:
     name: data-integration-backend
+  config:
+    import: optional:file:.env[.properties]
 
 app:
+  data-mode: ${APP_DATA_MODE:mock}
   databases:
     A:
       dbms: SQL Server

@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/college/{college}")
 public class CollegeController {
 
-    private final MockAcademicDataService dataService;
+    private final AcademicDataService dataService;
 
-    public CollegeController(MockAcademicDataService dataService) {
+    public CollegeController(AcademicDataService dataService) {
         this.dataService = dataService;
     }
 
