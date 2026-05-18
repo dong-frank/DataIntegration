@@ -10,9 +10,37 @@ import { Shell } from './components/Shell';
 
 const SESSION_KEY = 'data-integration-session';
 
+function isStoredSession(value: unknown): value is LoginResponse {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const session = value as Partial<LoginResponse>;
+  const validCollege = session.college === 'A' || session.college === 'B' || session.college === 'C';
+  const validAdmin = session.role === 'INTEGRATION_ADMIN' && session.college === null;
+  const validCollegeUser = session.role === 'COLLEGE' && validCollege;
+
+  return typeof session.token === 'string' && typeof session.displayName === 'string' && (validAdmin || validCollegeUser);
+}
+
 function readSession(): LoginResponse | null {
   const raw = window.localStorage.getItem(SESSION_KEY);
-  return raw ? (JSON.parse(raw) as LoginResponse) : null;
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    const session = JSON.parse(raw);
+    if (isStoredSession(session)) {
+      return session;
+    }
+
+    window.localStorage.removeItem(SESSION_KEY);
+    return null;
+  } catch {
+    window.localStorage.removeItem(SESSION_KEY);
+    return null;
+  }
 }
 
 export function App() {

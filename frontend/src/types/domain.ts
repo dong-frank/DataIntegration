@@ -46,6 +46,19 @@ export interface EnrollmentRecord {
   score: string;
 }
 
+export interface EnrollmentCreatePayload {
+  studentCollege: CollegeCode;
+  studentId: string;
+  courseCollege: CollegeCode;
+  courseId: string;
+}
+
+export interface WithdrawalResult {
+  enrollmentId: string;
+  withdrawn: boolean;
+  courseCollege: CollegeCode | null;
+}
+
 export interface CollegeStat {
   college: CollegeCode;
   displayName: string;

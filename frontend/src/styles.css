@@ -28,6 +28,11 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 .login-screen {
   display: grid;
   min-height: 100vh;
@@ -79,6 +84,35 @@ h2 {
 .inline-form {
   display: grid;
   gap: 14px;
+}
+
+.demo-account-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-account {
+  display: grid;
+  gap: 3px;
+  border: 1px solid #dbe3ef;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #334155;
+  padding: 10px;
+  text-align: left;
+}
+
+.demo-account.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.demo-account span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 label {
@@ -206,6 +240,16 @@ select {
   font-weight: 800;
 }
 
+.session-box div {
+  display: grid;
+  gap: 3px;
+}
+
+.session-box small {
+  color: #64748b;
+  font-size: 12px;
+}
+
 .content {
   min-width: 0;
   padding: 28px;
@@ -233,9 +277,34 @@ select {
   padding: 16px;
 }
 
+.toolbar-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toolbar-summary span {
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .inline-form {
   grid-template-columns: minmax(180px, 1fr) auto;
   align-items: end;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.form-action {
+  grid-column: 1 / -1;
 }
 
 .metric-grid {
@@ -305,6 +374,39 @@ th {
   font-size: 12px;
 }
 
+.status-badge,
+.table-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  min-height: 26px;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.status-badge {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.status-active {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.status-withdrawn {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.table-action {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #1d4ed8;
+}
+
 .empty-state {
   border: 1px dashed #cbd5e1;
   border-radius: 8px;
@@ -315,6 +417,31 @@ th {
 
 .chart-panel {
   min-height: 390px;
+}
+
+.college-stat-list {
+  display: grid;
+  gap: 8px;
+}
+
+.college-stat-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr repeat(3, minmax(90px, 1fr));
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 10px 0;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.college-stat-row:last-child {
+  border-bottom: 0;
+}
+
+.college-stat-row strong {
+  color: #172033;
 }
 
 .overlap-list {
@@ -346,9 +473,12 @@ th {
   }
 
   .nav-list,
+  .demo-account-grid,
   .metric-grid,
   .split-grid,
-  .inline-form {
+  .inline-form,
+  .form-grid,
+  .college-stat-row {
     grid-template-columns: 1fr;
   }
 
