@@ -40,6 +40,19 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           <p className="eyebrow">Data Integration</p>
           <h1>教务数据集成系统</h1>
         </div>
+        <div className="demo-account-grid" aria-label="演示账号">
+          {demoUsers.map((user) => (
+            <button
+              className={username === user.username ? 'demo-account active' : 'demo-account'}
+              key={user.username}
+              onClick={() => setUsername(user.username)}
+              type="button"
+            >
+              <strong>{user.label}</strong>
+              <span>{user.hint}</span>
+            </button>
+          ))}
+        </div>
         <form onSubmit={submit} className="login-form">
           <label>
             用户
@@ -53,7 +66,12 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           </label>
           <label>
             密码
-            <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" />
+            <input
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              type="password"
+            />
           </label>
           {error && <p className="form-error">{error}</p>}
           <button className="primary-button" disabled={loading} type="submit">

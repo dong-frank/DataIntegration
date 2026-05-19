@@ -1,33 +1,58 @@
 import type {
   ApiResponse,
   CollegeCode,
+  EnrollmentCreatePayload,
   CourseRecord,
   EnrollmentRecord,
   LoginResponse,
   StatsSummary,
   StudentRecord,
+  WithdrawalResult,
 } from '../types/domain';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api';
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '/api').replace(/\/$/, '');
+const REQUEST_TIMEOUT_MS = 12000;
+
+async function errorMessage(response: Response): Promise<string> {
+  try {
+    const payload = (await response.json()) as Partial<ApiResponse<unknown>> & { error?: string };
+    return payload.message || payload.error || `请求失败: ${response.status}`;
+  } catch {
+    return `请求失败: ${response.status}`;
+  }
+}
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-  if (!response.ok) {
-    throw new Error(`请求失败: ${response.status}`);
-  }
+  try {
+    const response = await fetch(`${API_BASE}${path}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+      signal: options.signal ?? controller.signal,
+    });
 
-  const payload = (await response.json()) as ApiResponse<T>;
-  if (!payload.success) {
-    throw new Error(payload.message);
+    if (!response.ok) {
+      throw new Error(await errorMessage(response));
+    }
+
+    const payload = (await response.json()) as ApiResponse<T>;
+    if (!payload.success) {
+      throw new Error(payload.message || '接口返回失败');
+    }
+    return payload.data;
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error('请求超时，请确认后端服务已启动');
+    }
+    throw err;
+  } finally {
+    window.clearTimeout(timeout);
   }
-  return payload.data;
 }
 
 export const api = {
@@ -53,9 +78,15 @@ export const api = {
   stats(): Promise<StatsSummary> {
     return request<StatsSummary>('/integration/stats');
   },
-  withdraw(enrollmentId: string) {
-    return request<{ enrollmentId: string; withdrawn: boolean; courseCollege: CollegeCode | null }>(
-      `/integration/enrollments/${enrollmentId}`,
+  enroll(payload: EnrollmentCreatePayload): Promise<EnrollmentRecord> {
+    return request<EnrollmentRecord>('/integration/enrollments', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+  withdraw(enrollmentId: string): Promise<WithdrawalResult> {
+    return request<WithdrawalResult>(
+      `/integration/enrollments/${encodeURIComponent(enrollmentId)}`,
       { method: 'DELETE' },
     );
   },
