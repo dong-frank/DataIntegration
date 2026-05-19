@@ -8,9 +8,11 @@ import com.example.dataintegration.college.CourseRecord;
 import com.example.dataintegration.college.EnrollmentRecord;
 import com.example.dataintegration.college.AcademicDataService;
 import com.example.dataintegration.common.ApiResponse;
+import com.example.dataintegration.xml.XmlImportService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,9 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class IntegrationController {
 
     private final AcademicDataService dataService;
+    private final XmlImportService xmlImportService;
 
-    public IntegrationController(AcademicDataService dataService) {
+    public IntegrationController(AcademicDataService dataService, XmlImportService xmlImportService) {
         this.dataService = dataService;
+        this.xmlImportService = xmlImportService;
     }
 
     @GetMapping("/shared-courses")
@@ -35,9 +39,17 @@ public class IntegrationController {
         return ApiResponse.ok(dataService.sharedCourses(source));
     }
 
-    @PostMapping("/enrollments")
+    @PostMapping(value = "/enrollments", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<EnrollmentRecord> enroll(@Valid @RequestBody EnrollmentCreateRequest request) {
         return ApiResponse.ok(dataService.createEnrollment(request));
+    }
+
+    @PostMapping(value = "/enrollments", consumes = MediaType.APPLICATION_XML_VALUE)
+    public ApiResponse<List<EnrollmentRecord>> enrollFromXml(
+        @RequestBody String xml,
+        @RequestParam Optional<CollegeCode> college
+    ) {
+        return ApiResponse.ok(xmlImportService.importEnrollments(xml, college));
     }
 
     @DeleteMapping("/enrollments/{id}")

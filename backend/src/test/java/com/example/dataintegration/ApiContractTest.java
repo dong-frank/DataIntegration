@@ -10,19 +10,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.StringReader;
-
-import javax.xml.XMLConstants;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.SchemaFactory;
-
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import com.example.dataintegration.college.CollegeCode;
+import com.example.dataintegration.xml.XmlSchemaValidationService;
 
 @SpringBootTest(properties = "app.data-mode=mock")
 @AutoConfigureMockMvc
@@ -30,6 +28,9 @@ class ApiContractTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private XmlSchemaValidationService xmlSchemaValidationService;
 
     @Test
     void healthEndpointReturnsOkStatus() throws Exception {
@@ -78,43 +79,69 @@ class ApiContractTest {
             .andExpect(jsonPath("$.data.totalEnrollments").value(750));
     }
 
-    @Test
-    void xmlExportEndpointReturnsXmlForStudentsCoursesAndEnrollments() throws Exception {
-        String studentXml = mockMvc.perform(get("/api/xml/A/students"))
+    @ParameterizedTest
+    @EnumSource(CollegeCode.class)
+    void xmlExportForAllCollegesPassesXsd(CollegeCode college) throws Exception {
+        String studentXml = mockMvc.perform(get("/api/xml/{college}/students", college))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
             .andExpect(content().string(containsString("<students>")))
             .andReturn()
             .getResponse()
             .getContentAsString();
-
         assertTrue(studentXml.contains("<sex>"));
-        validateAgainstAcademicSchema(studentXml);
+        xmlSchemaValidationService.validate(studentXml);
 
-        String courseXml = mockMvc.perform(get("/api/xml/A/courses"))
+        String courseXml = mockMvc.perform(get("/api/xml/{college}/courses", college))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
             .andExpect(content().string(containsString("<classes>")))
             .andReturn()
             .getResponse()
             .getContentAsString();
-
         assertTrue(courseXml.contains("<time>"));
         assertTrue(courseXml.contains("<location>"));
-        validateAgainstAcademicSchema(courseXml);
+        xmlSchemaValidationService.validate(courseXml);
 
-        String enrollmentXml = mockMvc.perform(get("/api/xml/A/enrollments"))
+        String enrollmentXml = mockMvc.perform(get("/api/xml/{college}/enrollments", college))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
             .andExpect(content().string(containsString("<choices>")))
             .andReturn()
             .getResponse()
             .getContentAsString();
-
         assertTrue(enrollmentXml.contains("<sid>"));
         assertTrue(enrollmentXml.contains("<cid>"));
         assertTrue(enrollmentXml.contains("<score>"));
-        validateAgainstAcademicSchema(enrollmentXml);
+        xmlSchemaValidationService.validate(enrollmentXml);
+    }
+
+    @Test
+    void enrollmentImportFromXmlValidatesBeforeProcessing() throws Exception {
+        mockMvc.perform(post("/api/integration/enrollments")
+                .contentType(MediaType.APPLICATION_XML)
+                .content("""
+                    <enrollmentRequests>
+                      <enrollmentRequest>
+                        <studentCollege>A</studentCollege>
+                        <studentId>A-S001</studentId>
+                        <courseCollege>B</courseCollege>
+                        <courseId>B-C001</courseId>
+                      </enrollmentRequest>
+                    </enrollmentRequests>
+                    """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data", hasSize(1)))
+            .andExpect(jsonPath("$.data[0].studentCollege").value("A"))
+            .andExpect(jsonPath("$.data[0].courseCollege").value("B"));
+    }
+
+    @Test
+    void enrollmentImportRejectsInvalidXml() throws Exception {
+        mockMvc.perform(post("/api/integration/enrollments")
+                .contentType(MediaType.APPLICATION_XML)
+                .content("<not-a-contract/>"))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -124,12 +151,4 @@ class ApiContractTest {
             .andExpect(jsonPath("$.data.withdrawn").value(true));
     }
 
-    private void validateAgainstAcademicSchema(String xml) throws Exception {
-        try (var inputStream = new ClassPathResource("academic-integration.xsd").getInputStream()) {
-            var schemaSource = new StreamSource(inputStream);
-            schemaSource.setSystemId("classpath:academic-integration.xsd");
-            var schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource);
-            schema.newValidator().validate(new StreamSource(new StringReader(xml)));
-        }
-    }
 }

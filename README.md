@@ -57,7 +57,10 @@ mvn spring-boot:run
 - `POST /api/auth/login`
 - `GET /api/college/A/students`
 - `GET /api/integration/stats`
-- `GET /api/xml/A/students`
+- `GET /api/xml/{college}/students` | `courses` | `enrollments`
+- `POST /api/integration/enrollments`（`Content-Type: application/xml` 导入跨院选课）
+
+XML 契约与 curl 演示见 `docs/XML契约与演示.md`。
 
 ## 启动前端
 
