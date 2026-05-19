@@ -80,15 +80,15 @@ curl http://127.0.0.1:8080/api/college/A/enrollments
 curl http://127.0.0.1:8080/api/xml/A/students
 ```
 
-## 后续给 Oracle/MySQL 成员的要求
+## 后续给 Oracle 成员的要求
 
-Oracle 和 MySQL 最好也提供等价适配视图，字段名保持一致：
+Oracle 最好也提供等价适配视图，字段名保持一致：
 
 - 学生：`id, college, name, gender, major, grade`
 - 课程：`id, college, name, hours, credits, teacher, location, shared`
 - 选课：`id, studentCollege, studentId, courseCollege, courseId, enrolledAt, status, score`
 
-这样后端只需要补 `OracleCollegeBDataService` 和 `MySqlCollegeCDataService`，不用再改前端和统一 API。
+这样后端只需要补 `OracleCollegeBDataService`，不用再改前端和统一 API。
 
 ## 跨院写回说明
 

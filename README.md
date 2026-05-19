@@ -47,7 +47,8 @@ mvn spring-boot:run
 `APP_DATA_MODE=database` 当前行为：
 
 - 学院 A：读取 SQL Server 视图 `dbo.vw_adapter_students`、`dbo.vw_adapter_courses`、`dbo.vw_adapter_enrollments`。
-- 学院 B/C：暂时继续读取 mock 数据，等待 Oracle/MySQL 适配器接入。
+- 学院 C：读取 MySQL 视图 `vw_adapter_students`、`vw_adapter_courses`、`vw_adapter_enrollments`。
+- 学院 B：暂时继续读取 mock 数据，等待 Oracle 适配器接入。
 
 常用接口：
 

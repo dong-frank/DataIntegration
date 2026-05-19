@@ -11,6 +11,8 @@ USE college_c;
 DROP VIEW IF EXISTS vw_adapter_enrollments;
 DROP VIEW IF EXISTS vw_adapter_courses;
 DROP VIEW IF EXISTS vw_adapter_students;
+DROP TABLE IF EXISTS C_IMPORTED_SELECTION;
+DROP TABLE IF EXISTS C_IMPORTED_STUDENT;
 DROP TABLE IF EXISTS C_SELECTION;
 DROP TABLE IF EXISTS C_COURSE;
 DROP TABLE IF EXISTS C_STUDENT;
@@ -45,6 +47,33 @@ CREATE TABLE C_SELECTION (
     CONSTRAINT FK_C_SELECTION_COURSE  FOREIGN KEY (Cno) REFERENCES C_COURSE  (Cno),
     CONSTRAINT FK_C_SELECTION_STUDENT FOREIGN KEY (Sno) REFERENCES C_STUDENT (Sno)
 ) COMMENT '院系C选课表 (PDF 表3-11 选课)';
+
+-- 跨院选课导入的外院学生信息
+CREATE TABLE C_IMPORTED_STUDENT (
+    source_college CHAR(1)     NOT NULL COMMENT '来源学院',
+    student_no     VARCHAR(20) NOT NULL COMMENT '外院学号',
+    student_name   VARCHAR(40) NOT NULL COMMENT '外院学生姓名',
+    gender_name    VARCHAR(2)  NOT NULL COMMENT '性别',
+    major_name     VARCHAR(40) NOT NULL COMMENT '院系/专业',
+    imported_on    DATE        NOT NULL COMMENT '导入日期',
+    CONSTRAINT PK_C_IMPORTED_STUDENT PRIMARY KEY (source_college, student_no),
+    CONSTRAINT CK_C_IMPORTED_STUDENT_SOURCE CHECK (source_college IN ('A','B','C'))
+) COMMENT '院系C跨院导入学生表';
+
+-- 跨院选课导入的选课信息
+CREATE TABLE C_IMPORTED_SELECTION (
+    Cno            CHAR(4)     NOT NULL COMMENT '课程编号',
+    source_college CHAR(1)     NOT NULL COMMENT '来源学院',
+    student_no     VARCHAR(20) NOT NULL COMMENT '外院学号',
+    Grd            INTEGER     NOT NULL DEFAULT 0 COMMENT '成绩',
+    enrolled_on    DATE        NOT NULL COMMENT '选课日期',
+    status_code    VARCHAR(12) NOT NULL DEFAULT 'ACTIVE' COMMENT '选课状态',
+    CONSTRAINT PK_C_IMPORTED_SELECTION PRIMARY KEY (Cno, source_college, student_no),
+    CONSTRAINT FK_C_IMPORTED_SELECTION_COURSE FOREIGN KEY (Cno) REFERENCES C_COURSE (Cno),
+    CONSTRAINT FK_C_IMPORTED_SELECTION_STUDENT FOREIGN KEY (source_college, student_no)
+        REFERENCES C_IMPORTED_STUDENT (source_college, student_no),
+    CONSTRAINT CK_C_IMPORTED_SELECTION_STATUS CHECK (status_code IN ('ACTIVE','WITHDRAWN'))
+) COMMENT '院系C跨院导入选课表';
 
 -- 学生数据 (50 名)
 INSERT INTO C_STUDENT (Sno, Snm, Sex, Sde, Pwd) VALUES
@@ -382,10 +411,10 @@ SELECT
     Cno                                  AS id,
     'C'                                  AS college,
     Cnm                                  AS name,
+    Ctm                                  AS hours,
     CAST(Cpt AS DECIMAL(3,1))            AS credits,
     Tec                                  AS teacher,
     Pla                                  AS location,
-    Ctm                                  AS class_hours,
     (CASE WHEN Share = 'Y' THEN 1 ELSE 0 END) AS shared
 FROM C_COURSE;
 
@@ -396,9 +425,20 @@ SELECT
     Sno                                  AS studentId,
     'C'                                  AS courseCollege,
     Cno                                  AS courseId,
-    Grd                                  AS grd,
     DATE_ADD('2026-03-01', INTERVAL (CAST(SUBSTRING(Cno, 2) AS UNSIGNED) - 1) DAY) AS enrolledAt,
-    'ACTIVE'                             AS status
-FROM C_SELECTION;
+    'ACTIVE'                             AS status,
+    Grd                                  AS score
+FROM C_SELECTION
+UNION ALL
+SELECT
+    CONCAT(Cno, '-', student_no)          AS id,
+    source_college                       AS studentCollege,
+    student_no                           AS studentId,
+    'C'                                  AS courseCollege,
+    Cno                                  AS courseId,
+    enrolled_on                          AS enrolledAt,
+    status_code                          AS status,
+    Grd                                  AS score
+FROM C_IMPORTED_SELECTION;
 
 -- 数据导入完成

@@ -46,7 +46,7 @@ docker exec -it college-sqlserver \
 
 后端读取 `backend/.env` 中的 JDBC 配置。正式运行时复制为本机环境变量或 IDE 运行配置。
 
-
+## SQLServer
 docker run \
   --platform linux/amd64 \
   --name college-sqlserver \
@@ -64,3 +64,29 @@ docker exec -it college-sqlserver \
 -P 'DataInt_2026!' \
 -C \
 -i /tmp/init.sql
+
+## MySQL
+docker run \
+  --name college-mysql \
+  -e MYSQL_ROOT_PASSWORD='DataInt_2026!' \
+  -e MYSQL_DATABASE='college_c' \
+  -e MYSQL_USER='college_c' \
+  -e MYSQL_PASSWORD='DataInt_2026!' \
+  -p 3306:3306 \
+  -d mysql:8.4
+
+docker cp database/mysql/init.sql college-mysql:/tmp/init.sql
+
+docker exec -it college-mysql \
+mysql -uroot -pDataInt_2026! \
+--default-character-set=utf8mb4 \
+college_c \
+-e "source /tmp/init.sql"
+
+后端连接本地 MySQL 8 Docker 时，JDBC URL 需要带上
+`allowPublicKeyRetrieval=true`，否则可能出现
+`Public Key Retrieval is not allowed`：
+
+```bash
+COLLEGE_C_JDBC_URL='jdbc:mysql://localhost:3306/college_c?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai'
+```
