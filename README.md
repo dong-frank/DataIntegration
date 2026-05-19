@@ -34,7 +34,7 @@ mvn spring-boot:run
 
 后端默认端口：`http://127.0.0.1:8080`
 
-默认数据模式是 `mock`，所有学院都使用内存示例数据。学院 A 的 SQL Server 适配器已经接入；想让学院 A 读取真实 SQL Server 时，先执行 `database/sqlserver/init.sql`，再用以下方式启动：
+默认数据模式是 `mock`，所有学院都使用内存示例数据。想让 A/B/C 三院读取真实数据库时，先分别执行 `database/sqlserver/init.sql`、`database/oracle/init.sql`、`database/mysql/init.sql`，再用以下方式启动：
 
 也可以在 `backend/.env` 中填写连接配置；后端会自动读取这个文件，真实密码不要提交到 Git。
 
@@ -47,8 +47,9 @@ mvn spring-boot:run
 `APP_DATA_MODE=database` 当前行为：
 
 - 学院 A：读取 SQL Server 视图 `dbo.vw_adapter_students`、`dbo.vw_adapter_courses`、`dbo.vw_adapter_enrollments`。
+- 学院 B：读取 Oracle 视图 `vw_adapter_students`、`vw_adapter_courses`、`vw_adapter_enrollments`。
 - 学院 C：读取 MySQL 视图 `vw_adapter_students`、`vw_adapter_courses`、`vw_adapter_enrollments`。
-- 学院 B：暂时继续读取 mock 数据，等待 Oracle 适配器接入。
+- 跨院选课写回会落到目标学院的导入学生表和导入选课表，避免破坏各院原始外键结构。
 
 常用接口：
 
@@ -100,5 +101,6 @@ npm run build
 - 分工计划：`docs/分工计划.md`
 - 流程图草稿：`docs/流程图草稿.md`
 - 学院 A SQL Server 适配：`docs/学院A-SQLServer后端适配说明.md`
+- 学院 B Oracle 字段映射：`docs/学院B字段映射说明.md`
 - 数据库说明：`database/README.md`
 - XML 契约：`backend/src/main/resources/academic-integration.xsd`

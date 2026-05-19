@@ -51,10 +51,11 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE B_STUDENT';             EXCEPTION WHEN OTHER
 -- 表 3-7：院系 B 学生表结构 [学号 varchar2(9), 姓名 varchar2(10), 性别 varchar2(2),
 --                             专业 varchar2(16), 密码 varchar2(6)]
 -- 异构点：B 的密码存在学生表中，A 的密码存在账户表中
+-- Oracle 默认按字节限制 VARCHAR2，性别需要用 CHAR 语义容纳中文“男/女”
 CREATE TABLE B_STUDENT (
     student_no     VARCHAR2(9)  NOT NULL,
     student_name   VARCHAR2(10) NOT NULL,
-    gender         VARCHAR2(2)  NOT NULL,
+    gender         VARCHAR2(2 CHAR)  NOT NULL,
     major          VARCHAR2(16) NOT NULL,
     student_passwd VARCHAR2(6)  NOT NULL,
     CONSTRAINT PK_B_STUDENT PRIMARY KEY (student_no)
@@ -110,7 +111,7 @@ CREATE TABLE B_IMPORTED_STUDENT (
     source_college CHAR(1)      NOT NULL,
     student_no     VARCHAR2(12) NOT NULL,
     student_name   VARCHAR2(40) NOT NULL,
-    gender         VARCHAR2(2)  NOT NULL,
+    gender         VARCHAR2(2 CHAR)  NOT NULL,
     major          VARCHAR2(40) NOT NULL,
     imported_on    DATE         DEFAULT TRUNC(SYSDATE) NOT NULL,
     CONSTRAINT PK_B_IMPORTED_STUDENT PRIMARY KEY (source_college, student_no),

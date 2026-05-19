@@ -90,3 +90,29 @@ college_c \
 ```bash
 COLLEGE_C_JDBC_URL='jdbc:mysql://localhost:3306/college_c?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai'
 ```
+
+## Oracle
+
+docker run \
+  --platform linux/amd64 \
+  --name college-oracle \
+  -e ORACLE_PASSWORD='DataInt_2026!' \
+  -p 1521:1521 \
+  -d gvenzl/oracle-xe:21-slim
+
+docker exec -i college-oracle \
+sqlplus -S 'sys/DataInt_2026!@//localhost:1521/XEPDB1 as sysdba' <<'SQL'
+CREATE USER college_b IDENTIFIED BY "DataInt_2026!"
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA UNLIMITED ON USERS;
+
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW TO college_b;
+EXIT;
+SQL
+
+docker cp database/oracle/init.sql college-oracle:/tmp/init.sql
+
+docker exec -it college-oracle \
+sqlplus college_b/'DataInt_2026!'@//localhost:1521/XEPDB1 \
+@/tmp/init.sql

@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-后端已经完成学院 A 的 SQL Server 读取适配。默认启动仍使用 mock 数据；当 `APP_DATA_MODE=database` 时，后端会把学院 A 的学生、课程、选课查询切到 SQL Server，学院 B/C 暂时继续使用 mock 数据。
+后端已经完成学院 A 的 SQL Server 读取适配，并且当前 `APP_DATA_MODE=database` 会把 A/B/C 三院分别切到 SQL Server、Oracle、MySQL 适配器。默认启动仍使用 mock 数据，便于前端和演示环境无数据库运行。
 
 ## 关键代码
 
@@ -11,8 +11,10 @@
 | `AcademicDataService` | 后端统一数据服务接口，供学院端、集成端、XML 导出共同使用 |
 | `MockAcademicDataService` | 默认 mock 实现，保留原来的 50/10/250 示例数据 |
 | `SqlServerCollegeADataService` | 查询 SQL Server 中学院 A 的三个适配视图 |
-| `RoutedAcademicDataService` | `APP_DATA_MODE=database` 时启用，学院 A 走 SQL Server，B/C 走 mock |
-| `CollegeAJdbcConfig` | 根据 `application.yml` 和环境变量创建学院 A 的 `JdbcTemplate` |
+| `OracleCollegeBDataService` | 查询 Oracle 中学院 B 的三个适配视图，并支持 B 侧跨院写回 |
+| `MySqlCollegeCDataService` | 查询 MySQL 中学院 C 的三个适配视图，并支持 C 侧跨院写回 |
+| `RoutedAcademicDataService` | `APP_DATA_MODE=database` 时启用，按目标学院路由到 A/B/C 真实适配器 |
+| `CollegeAJdbcConfig` | 根据 `application.yml` 和环境变量创建 A/B/C 的 `JdbcTemplate` |
 
 ## 当前字段口径
 
@@ -80,15 +82,15 @@ curl http://127.0.0.1:8080/api/college/A/enrollments
 curl http://127.0.0.1:8080/api/xml/A/students
 ```
 
-## 后续给 Oracle 成员的要求
+## A/B/C 统一视图要求
 
-Oracle 最好也提供等价适配视图，字段名保持一致：
+A、B、C 三院真实数据库都需要提供等价适配视图，字段名保持一致：
 
 - 学生：`id, college, name, gender, major, grade`
 - 课程：`id, college, name, hours, credits, teacher, location, shared`
 - 选课：`id, studentCollege, studentId, courseCollege, courseId, enrolledAt, status, score`
 
-这样后端只需要补 `OracleCollegeBDataService`，不用再改前端和统一 API。
+这样后端、前端和 XML 导出层都只依赖统一模型，不直接感知各院原始表字段差异。
 
 ## 跨院写回说明
 

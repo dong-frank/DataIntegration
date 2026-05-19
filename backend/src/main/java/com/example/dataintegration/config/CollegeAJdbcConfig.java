@@ -19,6 +19,11 @@ public class CollegeAJdbcConfig {
     }
 
     @Bean
+    public JdbcOperations collegeBJdbcTemplate(DatabaseConnectionProperties properties) {
+        return jdbcTemplate(properties, CollegeCode.B);
+    }
+
+    @Bean
     public JdbcOperations collegeCJdbcTemplate(DatabaseConnectionProperties properties) {
         return jdbcTemplate(properties, CollegeCode.C);
     }
