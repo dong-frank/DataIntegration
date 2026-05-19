@@ -25,6 +25,6 @@ app:
     C:
       dbms: MySQL
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: ${COLLEGE_C_JDBC_URL:jdbc:mysql://localhost:3306/college_c?useSSL=false&serverTimezone=Asia/Shanghai}
+      url: ${COLLEGE_C_JDBC_URL:jdbc:mysql://localhost:3306/college_c?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai}
       username: ${COLLEGE_C_DB_USER:college_c}
       password: ${COLLEGE_C_DB_PASSWORD:ChangeMe_123}

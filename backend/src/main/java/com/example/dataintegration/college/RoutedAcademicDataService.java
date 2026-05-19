@@ -23,29 +23,44 @@ import org.springframework.stereotype.Service;
 public class RoutedAcademicDataService implements AcademicDataService {
 
     private final SqlServerCollegeADataService collegeAService;
+    private final MySqlCollegeCDataService collegeCService;
     private final MockAcademicDataService fallbackService;
 
     public RoutedAcademicDataService(
         SqlServerCollegeADataService collegeAService,
+        MySqlCollegeCDataService collegeCService,
         MockAcademicDataService fallbackService
     ) {
         this.collegeAService = collegeAService;
+        this.collegeCService = collegeCService;
         this.fallbackService = fallbackService;
     }
 
     @Override
     public List<StudentRecord> students(CollegeCode college) {
-        return college == CollegeCode.A ? collegeAService.students() : fallbackService.students(college);
+        return switch (college) {
+            case A -> collegeAService.students();
+            case C -> collegeCService.students();
+            default -> fallbackService.students(college);
+        };
     }
 
     @Override
     public List<CourseRecord> courses(CollegeCode college) {
-        return college == CollegeCode.A ? collegeAService.courses() : fallbackService.courses(college);
+        return switch (college) {
+            case A -> collegeAService.courses();
+            case C -> collegeCService.courses();
+            default -> fallbackService.courses(college);
+        };
     }
 
     @Override
     public List<EnrollmentRecord> enrollments(CollegeCode college) {
-        return college == CollegeCode.A ? collegeAService.enrollments() : fallbackService.enrollments(college);
+        return switch (college) {
+            case A -> collegeAService.enrollments();
+            case C -> collegeCService.enrollments();
+            default -> fallbackService.enrollments(college);
+        };
     }
 
     @Override
@@ -71,6 +86,16 @@ public class RoutedAcademicDataService implements AcademicDataService {
             }
             return collegeAService.createEnrollment(request);
         }
+        if (request.courseCollege() == CollegeCode.C) {
+            if (request.studentCollege() != CollegeCode.C) {
+                StudentRecord sourceStudent = students(request.studentCollege()).stream()
+                    .filter(student -> student.id().equals(request.studentId()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("未找到源学院学生: " + request.studentId()));
+                return collegeCService.createImportedEnrollment(request, sourceStudent);
+            }
+            return collegeCService.createEnrollment(request);
+        }
         return fallbackService.createEnrollment(request);
     }
 
@@ -79,6 +104,10 @@ public class RoutedAcademicDataService implements AcademicDataService {
         WithdrawalResult collegeAResult = collegeAService.withdraw(enrollmentId);
         if (collegeAResult.withdrawn()) {
             return collegeAResult;
+        }
+        WithdrawalResult collegeCResult = collegeCService.withdraw(enrollmentId);
+        if (collegeCResult.withdrawn()) {
+            return collegeCResult;
         }
         return fallbackService.withdraw(enrollmentId);
     }
