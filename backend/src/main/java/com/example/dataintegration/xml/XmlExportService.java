@@ -13,10 +13,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class XmlExportService {
 
     private final AcademicDataService dataService;
+    private final XmlSchemaValidationService validationService;
     private final XmlMapper xmlMapper = new XmlMapper();
 
-    public XmlExportService(AcademicDataService dataService) {
+    public XmlExportService(AcademicDataService dataService, XmlSchemaValidationService validationService) {
         this.dataService = dataService;
+        this.validationService = validationService;
         this.xmlMapper.findAndRegisterModules();
     }
 
@@ -29,7 +31,9 @@ public class XmlExportService {
         };
 
         try {
-            return xmlMapper.writeValueAsString(document);
+            String xml = xmlMapper.writeValueAsString(document);
+            validationService.validate(xml);
+            return xml;
         } catch (JsonProcessingException error) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "XML 导出失败", error);
         }
