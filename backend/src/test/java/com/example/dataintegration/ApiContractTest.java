@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,6 +51,15 @@ class ApiContractTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.role").value("COLLEGE"))
             .andExpect(jsonPath("$.data.college").value("A"));
+    }
+
+    @Test
+    void corsAllowsLocalDemoOriginsForLogin() throws Exception {
+        mockMvc.perform(options("/api/auth/login")
+                .header("Origin", "http://192.168.1.20:5173")
+                .header("Access-Control-Request-Method", "POST")
+                .header("Access-Control-Request-Headers", "content-type"))
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -137,6 +147,26 @@ class ApiContractTest {
     }
 
     @Test
+    void enrollmentImportFromDedicatedXmlEndpointCreatesEnrollment() throws Exception {
+        mockMvc.perform(post("/api/integration/enrollments/xml")
+                .contentType(MediaType.APPLICATION_XML)
+                .content("""
+                    <enrollmentRequests>
+                      <enrollmentRequest>
+                        <studentCollege>A</studentCollege>
+                        <studentId>A-S002</studentId>
+                        <courseCollege>B</courseCollege>
+                        <courseId>B-C002</courseId>
+                      </enrollmentRequest>
+                    </enrollmentRequests>
+                    """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data", hasSize(1)))
+            .andExpect(jsonPath("$.data[0].studentCollege").value("A"))
+            .andExpect(jsonPath("$.data[0].courseCollege").value("B"));
+    }
+
+    @Test
     void enrollmentImportRejectsInvalidXml() throws Exception {
         mockMvc.perform(post("/api/integration/enrollments")
                 .contentType(MediaType.APPLICATION_XML)
@@ -145,10 +175,39 @@ class ApiContractTest {
     }
 
     @Test
+    void sharedCoursesXmlEndpointTransformsUnifiedCoursesToTargetCollegeFormat() throws Exception {
+        mockMvc.perform(get("/api/integration/shared-courses/xml")
+                .param("source", "B")
+                .param("target", "A"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
+            .andExpect(content().string(containsString("<Classes>")))
+            .andExpect(content().string(containsString("<课程编号>B-C001</课程编号>")))
+            .andExpect(content().string(containsString("<课时>")));
+    }
+
+    @Test
     void withdrawalEndpointAcceptsExistingEnrollmentId() throws Exception {
         mockMvc.perform(delete("/api/integration/enrollments/A-E0001"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.withdrawn").value(true));
+    }
+
+    @Test
+    void withdrawalImportFromXmlValidatesAndWithdrawsEnrollment() throws Exception {
+        mockMvc.perform(post("/api/integration/withdrawals/xml")
+                .contentType(MediaType.APPLICATION_XML)
+                .content("""
+                    <withdrawRequests>
+                      <withdrawRequest>
+                        <enrollmentId>A-E0002</enrollmentId>
+                      </withdrawRequest>
+                    </withdrawRequests>
+                    """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data", hasSize(1)))
+            .andExpect(jsonPath("$.data[0].enrollmentId").value("A-E0002"))
+            .andExpect(jsonPath("$.data[0].withdrawn").value(true));
     }
 
 }

@@ -2,10 +2,10 @@
 
 ## 技术栈
 
-- 后端：Spring Boot 3.3、Java 17、Jackson XML、JUnit 5。
+- 后端：Spring Boot 3.3、Java 17、Jackson XML、JAXP XSLT、JUnit 5。
 - 前端：React 18、Vite、TypeScript、Recharts、lucide-react。
 - 数据库目标：学院 A / SQL Server，学院 B / Oracle，学院 C / MySQL。
-- 集成方式：学院适配器导出/导入统一 XML，集成服务器负责共享课程、跨院选课、退课和统计。
+- 集成方式：学院适配器导出/导入统一 XML，集成服务器负责 XSD 校验、XSLT 转换、共享课程、跨院选课、退课和统计。
 
 ## 环境准备
 
@@ -58,7 +58,9 @@ mvn spring-boot:run
 - `GET /api/college/A/students`
 - `GET /api/integration/stats`
 - `GET /api/xml/{college}/students` | `courses` | `enrollments`
-- `POST /api/integration/enrollments`（`Content-Type: application/xml` 导入跨院选课）
+- `GET /api/integration/shared-courses/xml?source=B&target=A`（共享课程统一 XML 经 XSLT 转目标学院格式）
+- `POST /api/integration/enrollments/xml`（`Content-Type: application/xml` 导入跨院选课）
+- `POST /api/integration/withdrawals/xml`（`Content-Type: application/xml` 导入退选请求）
 
 XML 契约与 curl 演示见 `docs/XML契约与演示.md`。
 
@@ -107,3 +109,5 @@ npm run build
 - 学院 B Oracle 字段映射：`docs/学院B字段映射说明.md`
 - 数据库说明：`database/README.md`
 - XML 契约：`backend/src/main/resources/academic-integration.xsd`
+- XSLT 转换：`backend/src/main/resources/xslt/`
+- PDF 实现对照：`docs/PDF实现对照清单.md`

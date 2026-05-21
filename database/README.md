@@ -34,6 +34,28 @@ docker exec -it college-sqlserver \
 执行完成后，脚本末尾会分别查询 `vw_adapter_courses` 和
 `vw_adapter_enrollments` 的前 5 行，用于确认已经输出 `hours/location/score`。
 
+## 学院 A 中文问号和选课为 0 的修复
+
+如果学院 A 页面出现课程名/教师/地点为 `????`，且有效选课为 `0`，原因通常是旧版
+`database/sqlserver/init.sql` 使用了 `VARCHAR` 存中文，并且选课生成 CTE 使用了
+`offsets` 这个在 SQL Server 中容易触发语法错误的名字。
+
+不想清库重建时，可以执行增量修复脚本：
+
+```bash
+docker cp database/sqlserver/fix_20260521_unicode_and_selections.sql college-sqlserver:/tmp/fix_20260521_unicode_and_selections.sql
+
+docker exec -it college-sqlserver \
+/opt/mssql-tools18/bin/sqlcmd \
+-S localhost \
+-U sa \
+-P 'DataInt_2026!' \
+-C \
+-i /tmp/fix_20260521_unicode_and_selections.sql
+```
+
+执行后脚本末尾应显示 `student_count=50`、`course_count=10`、`selection_count=250`。
+
 ## 数据量要求
 
 - 每个学院 50 名学生。

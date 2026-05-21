@@ -55,6 +55,35 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   }
 }
 
+async function requestText(path: string, options: RequestInit = {}): Promise<string> {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(`${API_BASE}${path}`, {
+      headers: {
+        Accept: 'application/xml',
+        ...options.headers,
+      },
+      ...options,
+      signal: options.signal ?? controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(await errorMessage(response));
+    }
+
+    return response.text();
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error('请求超时，请确认后端服务已启动');
+    }
+    throw err;
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
 export const api = {
   login(username: string, password: string): Promise<LoginResponse> {
     return request<LoginResponse>('/auth/login', {
@@ -75,6 +104,10 @@ export const api = {
     const query = source ? `?source=${source}` : '';
     return request<CourseRecord[]>(`/integration/shared-courses${query}`);
   },
+  sharedCoursesXml(source: CollegeCode, target: CollegeCode): Promise<string> {
+    const query = new URLSearchParams({ source, target });
+    return requestText(`/integration/shared-courses/xml?${query.toString()}`);
+  },
   stats(): Promise<StatsSummary> {
     return request<StatsSummary>('/integration/stats');
   },
@@ -84,10 +117,28 @@ export const api = {
       body: JSON.stringify(payload),
     });
   },
+  enrollXml(xml: string): Promise<EnrollmentRecord[]> {
+    return request<EnrollmentRecord[]>('/integration/enrollments/xml', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/xml',
+      },
+      body: xml,
+    });
+  },
   withdraw(enrollmentId: string): Promise<WithdrawalResult> {
     return request<WithdrawalResult>(
       `/integration/enrollments/${encodeURIComponent(enrollmentId)}`,
       { method: 'DELETE' },
     );
+  },
+  withdrawXml(xml: string): Promise<WithdrawalResult[]> {
+    return request<WithdrawalResult[]>('/integration/withdrawals/xml', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/xml',
+      },
+      body: xml,
+    });
   },
 };

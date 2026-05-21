@@ -88,6 +88,13 @@
     </xs:sequence>
   </xs:complexType>
 
+  <!-- 集成环境退选请求：withdrawRequests/withdrawRequest -->
+  <xs:complexType name="withdrawRequestType">
+    <xs:sequence>
+      <xs:element name="enrollmentId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:element name="students">
     <xs:complexType>
       <xs:sequence>
@@ -116,6 +123,14 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="enrollmentRequest" type="enrollmentRequestType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="withdrawRequests">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="withdrawRequest" type="withdrawRequestType" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

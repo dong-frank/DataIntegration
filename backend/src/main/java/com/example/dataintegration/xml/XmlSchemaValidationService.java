@@ -20,19 +20,30 @@ public class XmlSchemaValidationService {
 
     private static final String XSD_PATH = "academic-integration.xsd";
 
-    private final Validator validator;
+    private final Schema schema;
 
     public XmlSchemaValidationService() {
-        this.validator = loadValidator();
+        this.schema = loadSchema(XSD_PATH);
     }
 
     public void validate(String xml) {
+        validate(xml, schema, XSD_PATH);
+    }
+
+    public void validate(String xml, String schemaPath) {
+        validate(xml, loadSchema(schemaPath), schemaPath);
+    }
+
+    private static void validate(String xml, Schema schema, String schemaPath) {
         try {
+            Validator validator = schema.newValidator();
+            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             validator.validate(new StreamSource(new StringReader(xml)));
         } catch (SAXException error) {
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
-                "XML 未通过 academic-integration.xsd 校验: " + error.getMessage(),
+                "XML 未通过 " + schemaPath + " 校验: " + error.getMessage(),
                 error
             );
         } catch (IOException error) {
@@ -44,20 +55,16 @@ public class XmlSchemaValidationService {
         }
     }
 
-    private static Validator loadValidator() {
-        try (var inputStream = new ClassPathResource(XSD_PATH).getInputStream()) {
+    private static Schema loadSchema(String schemaPath) {
+        try (var inputStream = new ClassPathResource(schemaPath).getInputStream()) {
             var schemaSource = new StreamSource(inputStream);
-            schemaSource.setSystemId("classpath:" + XSD_PATH);
+            schemaSource.setSystemId("classpath:" + schemaPath);
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-            Schema schema = factory.newSchema(schemaSource);
-            Validator validator = schema.newValidator();
-            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-            return validator;
+            return factory.newSchema(schemaSource);
         } catch (IOException | SAXException error) {
-            throw new IllegalStateException("无法加载 XSD: " + XSD_PATH, error);
+            throw new IllegalStateException("无法加载 XSD: " + schemaPath, error);
         }
     }
 }
