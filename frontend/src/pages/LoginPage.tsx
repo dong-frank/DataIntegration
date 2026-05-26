@@ -55,16 +55,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         </div>
         <form onSubmit={submit} className="login-form">
           <label>
-            用户
-            <select value={username} onChange={(event) => setUsername(event.target.value)}>
-              {demoUsers.map((user) => (
-                <option key={user.username} value={user.username}>
-                  {user.label} / {user.hint}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
             密码
             <input
               autoComplete="current-password"

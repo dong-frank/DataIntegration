@@ -67,7 +67,6 @@ export function CollegePage({ session }: CollegePageProps) {
     void load();
   }, [load]);
 
-  const visibleEnrollments = useMemo(() => enrollments.slice(0, 8), [enrollments]);
   const activeEnrollments = useMemo(
     () => enrollments.filter((enrollment) => enrollment.status === 'ACTIVE').length,
     [enrollments],
@@ -142,43 +141,50 @@ export function CollegePage({ session }: CollegePageProps) {
       <section className="split-grid">
         <div className="panel">
           <div className="panel-heading">
-            <h2>学生样例</h2>
-            <span>前 8 条</span>
+            <h2>学生信息</h2>
+            <span>{loading ? '加载中' : `${students.length} 条`}</span>
           </div>
-          <DataTable
-            rows={students.slice(0, 8)}
-            emptyText={loading ? '正在加载学生' : '暂无学生'}
-            columns={[
-              { key: 'id', label: '学号', render: (student) => student.id },
-              { key: 'name', label: '姓名', render: (student) => student.name },
-              { key: 'major', label: '专业', render: (student) => student.major },
-            ]}
-          />
+          <div className="scroll-table">
+            <DataTable
+              rows={students}
+              emptyText={loading ? '正在加载学生' : '暂无学生'}
+              columns={[
+                { key: 'id', label: '学号', render: (student) => student.id },
+                { key: 'name', label: '姓名', render: (student) => student.name },
+                { key: 'gender', label: '性别', render: (student) => student.gender },
+                { key: 'major', label: '专业', render: (student) => student.major },
+                { key: 'grade', label: '年级', render: (student) => student.grade },
+              ]}
+            />
+          </div>
         </div>
         <div className="panel">
           <div className="panel-heading">
-            <h2>选课样例</h2>
-            <span>前 8 条</span>
+            <h2>选课信息</h2>
+            <span>{loading ? '加载中' : `${enrollments.length} 条`}</span>
           </div>
-          <DataTable
-            rows={visibleEnrollments}
-            emptyText={loading ? '正在加载选课' : '暂无选课'}
-            columns={[
-              { key: 'id', label: '记录号', render: (enrollment) => enrollment.id },
-              { key: 'studentId', label: '学生', render: (enrollment) => enrollment.studentId },
-              { key: 'courseId', label: '课程', render: (enrollment) => enrollment.courseId },
-              { key: 'score', label: '成绩', render: (enrollment) => enrollment.score },
-              {
-                key: 'status',
-                label: '状态',
-                render: (enrollment) => (
-                  <span className={`status-badge status-${enrollment.status.toLowerCase()}`}>
-                    {statusLabel(enrollment.status)}
-                  </span>
-                ),
-              },
-            ]}
-          />
+          <div className="scroll-table">
+            <DataTable
+              rows={enrollments}
+              emptyText={loading ? '正在加载选课' : '暂无选课'}
+              columns={[
+                { key: 'id', label: '记录号', render: (enrollment) => enrollment.id },
+                { key: 'studentCollege', label: '学生学院', render: (enrollment) => `学院${enrollment.studentCollege}` },
+                { key: 'studentId', label: '学生', render: (enrollment) => enrollment.studentId },
+                { key: 'courseId', label: '课程', render: (enrollment) => enrollment.courseId },
+                { key: 'score', label: '成绩', render: (enrollment) => enrollment.score },
+                {
+                  key: 'status',
+                  label: '状态',
+                  render: (enrollment) => (
+                    <span className={`status-badge status-${enrollment.status.toLowerCase()}`}>
+                      {statusLabel(enrollment.status)}
+                    </span>
+                  ),
+                },
+              ]}
+            />
+          </div>
         </div>
       </section>
     </section>

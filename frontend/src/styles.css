@@ -437,6 +437,18 @@ select {
   overflow-x: auto;
 }
 
+.scroll-table {
+  max-height: 430px;
+  overflow: auto;
+}
+
+.scroll-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #ffffff;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
