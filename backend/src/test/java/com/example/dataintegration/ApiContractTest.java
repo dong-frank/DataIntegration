@@ -167,6 +167,25 @@ class ApiContractTest {
     }
 
     @Test
+    void duplicateEnrollmentImportReturnsConflictMessageForFrontend() throws Exception {
+        mockMvc.perform(post("/api/integration/enrollments/xml")
+                .contentType(MediaType.APPLICATION_XML)
+                .content("""
+                    <enrollmentRequests>
+                      <enrollmentRequest>
+                        <studentCollege>A</studentCollege>
+                        <studentId>A-S001</studentId>
+                        <courseCollege>A</courseCollege>
+                        <courseId>A-C001</courseId>
+                      </enrollmentRequest>
+                    </enrollmentRequests>
+                    """))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.success").value(false))
+            .andExpect(jsonPath("$.message").value(containsString("该学生已选择课程")));
+    }
+
+    @Test
     void enrollmentImportRejectsInvalidXml() throws Exception {
         mockMvc.perform(post("/api/integration/enrollments")
                 .contentType(MediaType.APPLICATION_XML)

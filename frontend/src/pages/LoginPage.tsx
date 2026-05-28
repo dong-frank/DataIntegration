@@ -4,9 +4,9 @@ import { api } from '../api/client';
 import type { LoginResponse } from '../types/domain';
 
 const demoUsers = [
-  { username: 'college-a', label: '学院A', hint: 'SQL Server' },
-  { username: 'college-b', label: '学院B', hint: 'Oracle' },
-  { username: 'college-c', label: '学院C', hint: 'MySQL' },
+  { username: 'college-a', label: '信息工程学院', hint: 'SQL Server' },
+  { username: 'college-b', label: '经济管理学院', hint: 'Oracle' },
+  { username: 'college-c', label: '传媒设计学院', hint: 'MySQL' },
   { username: 'integration-admin', label: '集成服务器', hint: 'Admin' },
 ];
 

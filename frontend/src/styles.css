@@ -181,6 +181,61 @@ select {
   font-size: 13px;
 }
 
+.notification-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.38);
+}
+
+.notification-dialog {
+  display: grid;
+  width: min(420px, 100%);
+  gap: 12px;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 22px;
+  box-shadow: 0 22px 58px rgba(23, 32, 51, 0.18);
+}
+
+.notification-dialog h2 {
+  font-size: 20px;
+}
+
+.notification-dialog p {
+  margin-bottom: 4px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.notification-status {
+  width: fit-content;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.notification-status-success {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.notification-status-error {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.notification-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .app-shell {
   display: grid;
   grid-template-columns: 248px minmax(0, 1fr);

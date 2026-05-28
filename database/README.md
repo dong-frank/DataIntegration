@@ -62,7 +62,23 @@ docker exec -it college-sqlserver \
 - 每个学院 10 门课程。
 - 每个学生选择 5 门课，即每院 250 条初始选课记录。
 - A/B/C 学生集合不重叠。
-- 课程信息需要设计部分重叠，用于展示共享课程和集成统计。
+- 课程信息按学院学科方向特色化命名，`shared`/`Share` 标记表示课程是否开放给外院学生跨院选修。
+
+## 学生姓名增量更新
+
+当前初始化脚本已将学生姓名从编号占位值改为三字中文姓名。若本地容器已初始化过，
+不想清空选课数据重建，可以只执行姓名增量脚本：
+
+```bash
+docker cp database/sqlserver/update_20260529_student_names.sql college-sqlserver:/tmp/update_20260529_student_names.sql
+docker exec college-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'DataInt_2026!' -C -i /tmp/update_20260529_student_names.sql
+
+docker cp database/mysql/update_20260529_student_names.sql college-mysql:/tmp/update_20260529_student_names.sql
+docker exec college-mysql mysql -uroot -pDataInt_2026! --default-character-set=utf8mb4 college_c -e 'source /tmp/update_20260529_student_names.sql'
+
+docker cp database/oracle/update_20260529_student_names.sql college-oracle:/tmp/update_20260529_student_names.sql
+docker exec college-oracle sqlplus -S 'college_b/DataInt_2026!@//localhost:1521/XEPDB1' @/tmp/update_20260529_student_names.sql
+```
 
 ## 环境变量
 
@@ -115,6 +131,15 @@ COLLEGE_C_JDBC_URL='jdbc:mysql://localhost:3306/college_c?useSSL=false&allowPubl
 
 ## Oracle
 
+如果之前启动失败，先清理同名容器：
+
+```bash
+docker rm -f college-oracle 2>/dev/null || true
+```
+
+启动 Oracle XE 后需要等数据库初始化完成，`gvenzl/oracle-xe` 首次启动可能需要数分钟：
+
+```bash
 docker run \
   --platform linux/amd64 \
   --name college-oracle \
@@ -122,8 +147,26 @@ docker run \
   -p 1521:1521 \
   -d gvenzl/oracle-xe:21-slim
 
-docker exec -i college-oracle \
-sqlplus -S 'sys/DataInt_2026!@//localhost:1521/XEPDB1 as sysdba' <<'SQL'
+until docker exec college-oracle healthcheck.sh >/dev/null 2>&1; do
+  echo 'waiting for Oracle...'
+  sleep 5
+done
+```
+
+创建或重建学院 B 用户：
+
+```bash
+docker exec -i college-oracle sqlplus -S /nolog <<'SQL'
+CONNECT sys/"DataInt_2026!"@//localhost:1521/XEPDB1 AS SYSDBA
+BEGIN
+  EXECUTE IMMEDIATE 'DROP USER college_b CASCADE';
+EXCEPTION
+  WHEN OTHERS THEN
+    IF SQLCODE != -1918 THEN
+      RAISE;
+    END IF;
+END;
+/
 CREATE USER college_b IDENTIFIED BY "DataInt_2026!"
   DEFAULT TABLESPACE USERS
   TEMPORARY TABLESPACE TEMP
@@ -132,9 +175,16 @@ CREATE USER college_b IDENTIFIED BY "DataInt_2026!"
 GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW TO college_b;
 EXIT;
 SQL
+```
 
+导入学院 B 初始化脚本：
+
+```bash
 docker cp database/oracle/init.sql college-oracle:/tmp/init.sql
 
-docker exec -it college-oracle \
-sqlplus college_b/'DataInt_2026!'@//localhost:1521/XEPDB1 \
+docker exec -i college-oracle sqlplus -S /nolog <<'SQL'
+CONNECT college_b/"DataInt_2026!"@//localhost:1521/XEPDB1
 @/tmp/init.sql
+EXIT;
+SQL
+```

@@ -81,11 +81,11 @@ CREATE TABLE B_ACCOUNT (
 -- 课程编号格式 B0001~B0010（varchar2(5)）
 CREATE TABLE B_COURSE (
     course_no   VARCHAR2(5)  NOT NULL,
-    course_name VARCHAR2(16) NOT NULL,
+    course_name VARCHAR2(16 CHAR) NOT NULL,
     class_hours VARCHAR2(2)  NOT NULL,
     credit_pts  VARCHAR2(1)  NOT NULL,
     teacher     VARCHAR2(10) NOT NULL,
-    location    VARCHAR2(20) NOT NULL,
+    location    VARCHAR2(20 CHAR) NOT NULL,
     shared      CHAR(1)      NOT NULL,
     CONSTRAINT PK_B_COURSE       PRIMARY KEY (course_no),
     CONSTRAINT CK_B_COURSE_SHARE CHECK (shared IN ('Y', 'N'))
@@ -143,14 +143,38 @@ CREATE TABLE B_IMPORTED_SELECTION (
 -- 示例：LEVEL=1 → '202200001'，LEVEL=2 → '202300002'，LEVEL=3 → '202400003'，
 --       LEVEL=4 → '202200004' ...
 INSERT INTO B_STUDENT (student_no, student_name, gender, major, student_passwd)
+WITH student_names AS (
+    SELECT
+        LEVEL AS n,
+        CASE MOD(LEVEL - 1, 10)
+            WHEN 0 THEN '周'
+            WHEN 1 THEN '林'
+            WHEN 2 THEN '陈'
+            WHEN 3 THEN '赵'
+            WHEN 4 THEN '李'
+            WHEN 5 THEN '王'
+            WHEN 6 THEN '刘'
+            WHEN 7 THEN '张'
+            WHEN 8 THEN '吴'
+            ELSE '郑'
+        END ||
+        CASE TRUNC((LEVEL - 1) / 10)
+            WHEN 0 THEN '景文'
+            WHEN 1 THEN '若帆'
+            WHEN 2 THEN '嘉仪'
+            WHEN 3 THEN '思衡'
+            ELSE '明达'
+        END AS student_name
+    FROM DUAL
+    CONNECT BY LEVEL <= 50
+)
 SELECT
-    TO_CHAR(2022 + MOD(LEVEL - 1, 3)) || LPAD(TO_CHAR(LEVEL), 5, '0') AS student_no,
-    'B学生' || LPAD(TO_CHAR(LEVEL), 3, '0')                            AS student_name,
-    CASE WHEN MOD(LEVEL, 2) = 1 THEN '男' ELSE '女' END                AS gender,
+    TO_CHAR(2022 + MOD(n - 1, 3)) || LPAD(TO_CHAR(n), 5, '0')         AS student_no,
+    student_name                                                       AS student_name,
+    CASE WHEN MOD(n, 2) = 1 THEN '男' ELSE '女' END                    AS gender,
     '学院B'                                                             AS major,
     '123456'                                                            AS student_passwd
-FROM DUAL
-CONNECT BY LEVEL <= 50;
+FROM student_names;
 
 -- 50 个账户（每名学生对应一个账户，客体 student_no 指向该学生的学号）
 INSERT INTO B_ACCOUNT (acct_name, acct_passwd, acct_level, student_no)
@@ -166,25 +190,25 @@ CONNECT BY LEVEL <= 50;
 -- 课时 (class_hours) 按 48/64/32 轮转，学分 (credit_pts) 按 3/4/2 轮转
 INSERT ALL
     INTO B_COURSE (course_no, course_name, class_hours, credit_pts, teacher, location, shared)
-        VALUES ('B0001', '数据库系统', '48', '3', 'B教师01', '实验楼101', 'Y')
+        VALUES ('B0001', '商业数据分析', '48', '3', 'B教师01', '商科楼101', 'Y')
     INTO B_COURSE (course_no, course_name, class_hours, credit_pts, teacher, location, shared)
-        VALUES ('B0002', '数据集成',   '64', '4', 'B教师02', '实验楼102', 'Y')
+        VALUES ('B0002', '数字经济导论', '64', '4', 'B教师02', '商科楼102', 'Y')
     INTO B_COURSE (course_no, course_name, class_hours, credit_pts, teacher, location, shared)
-        VALUES ('B0003', '软件工程',   '32', '2', 'B教师03', '实验楼103', 'Y')
+        VALUES ('B0003', '市场营销',   '32', '2', 'B教师03', '商科楼103', 'Y')
     INTO B_COURSE (course_no, course_name, class_hours, credit_pts, teacher, location, shared)
-        VALUES ('B0004', '计算机网络', '48', '3', 'B教师04', '实验楼104', 'Y')
+        VALUES ('B0004', '创新创业管理', '48', '3', 'B教师04', '商科楼104', 'Y')
     INTO B_COURSE (course_no, course_name, class_hours, credit_pts, teacher, location, shared)
-        VALUES ('B0005', '操作系统',   '64', '4', 'B教师05', '实验楼105', 'Y')
+        VALUES ('B0005', '供应链管理', '64', '4', 'B教师05', '商科楼105', 'Y')
     INTO B_COURSE (course_no, course_name, class_hours, credit_pts, teacher, location, shared)
-        VALUES ('B0006', '人工智能',   '32', '2', 'B教师06', '实验楼106', 'Y')
+        VALUES ('B0006', '会计信息化', '32', '2', 'B教师06', '商科楼106', 'Y')
     INTO B_COURSE (course_no, course_name, class_hours, credit_pts, teacher, location, shared)
-        VALUES ('B0007', '高等数学',   '48', '3', 'B教师07', '教学楼201', 'N')
+        VALUES ('B0007', '微观经济学', '48', '3', 'B教师07', '教学楼201', 'N')
     INTO B_COURSE (course_no, course_name, class_hours, credit_pts, teacher, location, shared)
-        VALUES ('B0008', '大学英语',   '64', '4', 'B教师08', '教学楼202', 'N')
+        VALUES ('B0008', '商务英语',   '64', '4', 'B教师08', '教学楼202', 'N')
     INTO B_COURSE (course_no, course_name, class_hours, credit_pts, teacher, location, shared)
-        VALUES ('B0009', '信息安全',   '32', '2', 'B教师09', '实验楼203', 'N')
+        VALUES ('B0009', '组织行为学', '32', '2', 'B教师09', '商科楼203', 'N')
     INTO B_COURSE (course_no, course_name, class_hours, credit_pts, teacher, location, shared)
-        VALUES ('B0010', 'Web开发',    '48', '3', 'B教师10', '实验楼204', 'N')
+        VALUES ('B0010', '金融科技',   '48', '3', 'B教师10', '商科楼204', 'N')
 SELECT 1 FROM DUAL;
 
 -- 250 条选课记录（每名学生选 5 门课，按行号轮转遍历 10 门课程）

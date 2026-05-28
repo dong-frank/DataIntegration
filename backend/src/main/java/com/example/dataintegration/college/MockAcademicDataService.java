@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.dataintegration.integration.CourseOverlap;
+import com.example.dataintegration.integration.DuplicateEnrollmentException;
 import com.example.dataintegration.integration.EnrollmentCreateRequest;
 import com.example.dataintegration.integration.StatsSummary;
 import com.example.dataintegration.integration.WithdrawalResult;
@@ -21,10 +22,32 @@ import org.springframework.stereotype.Service;
 @Service
 public class MockAcademicDataService implements AcademicDataService {
 
-    private static final String[] COURSE_NAMES = {
-        "数据库系统", "数据集成", "软件工程", "计算机网络", "操作系统",
-        "人工智能", "高等数学", "大学英语", "信息安全", "Web开发"
-    };
+    private static final Map<CollegeCode, String[]> COURSE_NAMES_BY_COLLEGE = Map.of(
+        CollegeCode.A, new String[] {
+            "算法设计", "软件工程实践", "网络空间安全", "智能系统导论", "云计算基础",
+            "人机交互", "离散数学", "工程英语", "嵌入式系统", "移动应用开发"
+        },
+        CollegeCode.B, new String[] {
+            "商业数据分析", "数字经济导论", "市场营销", "创新创业管理", "供应链管理",
+            "会计信息化", "微观经济学", "商务英语", "组织行为学", "金融科技"
+        },
+        CollegeCode.C, new String[] {
+            "新媒体传播", "数字内容设计", "用户研究方法", "文化数据分析", "公共表达训练",
+            "视觉传达基础", "新闻写作", "影视剪辑", "品牌策划", "交互设计"
+        }
+    );
+
+    private static final Map<CollegeCode, String[]> STUDENT_SURNAMES_BY_COLLEGE = Map.of(
+        CollegeCode.A, new String[] {"林", "陈", "赵", "周", "吴", "郑", "王", "李", "张", "刘"},
+        CollegeCode.B, new String[] {"周", "林", "陈", "赵", "李", "王", "刘", "张", "吴", "郑"},
+        CollegeCode.C, new String[] {"苏", "林", "陈", "赵", "李", "王", "刘", "张", "吴", "郑"}
+    );
+
+    private static final Map<CollegeCode, String[]> STUDENT_GIVEN_NAMES_BY_COLLEGE = Map.of(
+        CollegeCode.A, new String[] {"安然", "子昂", "明轩", "清越", "星河"},
+        CollegeCode.B, new String[] {"景文", "若帆", "嘉仪", "思衡", "明达"},
+        CollegeCode.C, new String[] {"知夏", "青岚", "慕白", "念初", "云舟"}
+    );
 
     private final Map<CollegeCode, List<StudentRecord>> students = new EnumMap<>(CollegeCode.class);
     private final Map<CollegeCode, List<CourseRecord>> courses = new EnumMap<>(CollegeCode.class);
@@ -63,6 +86,7 @@ public class MockAcademicDataService implements AcademicDataService {
     @Override
     public EnrollmentRecord createEnrollment(EnrollmentCreateRequest request) {
         List<EnrollmentRecord> target = enrollments.computeIfAbsent(request.courseCollege(), key -> new ArrayList<>());
+        assertEnrollmentNotExists(request, target);
         String id = "%s-X%04d".formatted(request.courseCollege(), target.size() + 1);
         EnrollmentRecord record = new EnrollmentRecord(
             id,
@@ -144,7 +168,7 @@ public class MockAcademicDataService implements AcademicDataService {
                 collegeStudents.add(new StudentRecord(
                     "%s-S%03d".formatted(college, i),
                     college,
-                    "%s学生%03d".formatted(college.getDisplayName(), i),
+                    studentName(college, i),
                     i % 2 == 0 ? "女" : "男",
                     "%s教学管理".formatted(college.getDisplayName()),
                     2022 + (i % 3)
@@ -155,7 +179,7 @@ public class MockAcademicDataService implements AcademicDataService {
                 collegeCourses.add(new CourseRecord(
                     "%s-C%03d".formatted(college, i),
                     college,
-                    COURSE_NAMES[i - 1],
+                    COURSE_NAMES_BY_COLLEGE.get(college)[i - 1],
                     (int) ((2.0 + (i % 3)) * 16),
                     2.0 + (i % 3),
                     "%s教师%02d".formatted(college.getDisplayName(), i),
@@ -185,6 +209,31 @@ public class MockAcademicDataService implements AcademicDataService {
             students.put(college, collegeStudents);
             courses.put(college, collegeCourses);
             enrollments.put(college, collegeEnrollments);
+        }
+    }
+
+    private String studentName(CollegeCode college, int sequence) {
+        String[] surnames = STUDENT_SURNAMES_BY_COLLEGE.get(college);
+        String[] givenNames = STUDENT_GIVEN_NAMES_BY_COLLEGE.get(college);
+        int nameIndex = sequence - 1;
+        return surnames[nameIndex % surnames.length] + givenNames[nameIndex / surnames.length];
+    }
+
+    private void assertEnrollmentNotExists(EnrollmentCreateRequest request, List<EnrollmentRecord> target) {
+        boolean exists = target.stream().anyMatch(record ->
+            record.studentCollege() == request.studentCollege()
+                && record.studentId().equals(request.studentId())
+                && record.courseCollege() == request.courseCollege()
+                && record.courseId().equals(request.courseId())
+                && "ACTIVE".equals(record.status())
+        );
+        if (exists) {
+            throw new DuplicateEnrollmentException(
+                request.studentCollege(),
+                request.studentId(),
+                request.courseCollege(),
+                request.courseId()
+            );
         }
     }
 }

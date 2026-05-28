@@ -10,11 +10,12 @@ import type {
   StatsSummary,
   StudentRecord,
 } from '../types/domain';
+import { collegeLabel, displayCollegeText } from '../utils/collegeLabels';
 
 const collegeOptions: Array<{ code: CollegeCode; label: string; dbms: string }> = [
-  { code: 'A', label: '学院A', dbms: 'SQL Server' },
-  { code: 'B', label: '学院B', dbms: 'Oracle' },
-  { code: 'C', label: '学院C', dbms: 'MySQL' },
+  { code: 'A', label: collegeLabel('A'), dbms: 'SQL Server' },
+  { code: 'B', label: collegeLabel('B'), dbms: 'Oracle' },
+  { code: 'C', label: collegeLabel('C'), dbms: 'MySQL' },
 ];
 
 const defaultEnrollForm: EnrollmentCreatePayload = {
@@ -24,22 +25,23 @@ const defaultEnrollForm: EnrollmentCreatePayload = {
   courseId: 'B0001',
 };
 
+type Notification = { type: 'success' | 'error'; text: string };
+
 export function IntegrationPage() {
-  const [source, setSource] = useState<CollegeCode>('B');
   const [courses, setCourses] = useState<CourseRecord[]>([]);
   const [students, setStudents] = useState<StudentRecord[]>([]);
-  const [withdrawCollege, setWithdrawCollege] = useState<CollegeCode>('B');
-  const [withdrawEnrollments, setWithdrawEnrollments] = useState<EnrollmentRecord[]>([]);
+  const [allCourses, setAllCourses] = useState<CourseRecord[]>([]);
+  const [allStudents, setAllStudents] = useState<StudentRecord[]>([]);
+  const [allEnrollments, setAllEnrollments] = useState<EnrollmentRecord[]>([]);
   const [withdrawStudents, setWithdrawStudents] = useState<StudentRecord[]>([]);
   const [withdrawCourses, setWithdrawCourses] = useState<CourseRecord[]>([]);
   const [stats, setStats] = useState<StatsSummary | null>(null);
   const [enrollmentId, setEnrollmentId] = useState('B0001-202200001');
   const [enrollForm, setEnrollForm] = useState<EnrollmentCreatePayload>(defaultEnrollForm);
-  const [message, setMessage] = useState('');
+  const [notification, setNotification] = useState<Notification | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingStudents, setLoadingStudents] = useState(true);
-  const [loadingWithdrawEnrollments, setLoadingWithdrawEnrollments] = useState(true);
   const [loadingWithdrawDetails, setLoadingWithdrawDetails] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -47,18 +49,24 @@ export function IntegrationPage() {
     setLoading(true);
     setError('');
     try {
-      const [nextCourses, nextStats] = await Promise.all([
-        api.sharedCourses(source),
+      const [nextCourses, nextStats, nextAllStudents, nextAllCourses, nextAllEnrollments] = await Promise.all([
+        api.sharedCourses(enrollForm.courseCollege),
         api.stats(),
+        Promise.all(collegeOptions.map((college) => api.students(college.code))),
+        Promise.all(collegeOptions.map((college) => api.courses(college.code))),
+        Promise.all(collegeOptions.map((college) => api.enrollments(college.code))),
       ]);
       setCourses(nextCourses);
       setStats(nextStats);
+      setAllStudents(nextAllStudents.flat());
+      setAllCourses(nextAllCourses.flat());
+      setAllEnrollments(nextAllEnrollments.flat());
     } catch (err) {
       setError(err instanceof Error ? err.message : '集成数据加载失败');
     } finally {
       setLoading(false);
     }
-  }, [source]);
+  }, [enrollForm.courseCollege]);
 
   const loadStudents = useCallback(async () => {
     setLoadingStudents(true);
@@ -74,20 +82,6 @@ export function IntegrationPage() {
     }
   }, [enrollForm.studentCollege]);
 
-  const loadWithdrawEnrollments = useCallback(async () => {
-    setLoadingWithdrawEnrollments(true);
-    setError('');
-    try {
-      const nextEnrollments = await api.enrollments(withdrawCollege);
-      setWithdrawEnrollments(nextEnrollments);
-    } catch (err) {
-      setWithdrawEnrollments([]);
-      setError(err instanceof Error ? err.message : '退选记录加载失败');
-    } finally {
-      setLoadingWithdrawEnrollments(false);
-    }
-  }, [withdrawCollege]);
-
   useEffect(() => {
     void load();
   }, [load]);
@@ -95,10 +89,6 @@ export function IntegrationPage() {
   useEffect(() => {
     void loadStudents();
   }, [loadStudents]);
-
-  useEffect(() => {
-    void loadWithdrawEnrollments();
-  }, [loadWithdrawEnrollments]);
 
   useEffect(() => {
     setEnrollForm((form) => {
@@ -133,12 +123,12 @@ export function IntegrationPage() {
   }, [courses]);
 
   const withdrawEnrollmentOptions = useMemo(
-    () => withdrawEnrollments.filter((record) => record.status !== 'WITHDRAWN'),
-    [withdrawEnrollments],
+    () => allEnrollments.filter((record) => record.status !== 'WITHDRAWN'),
+    [allEnrollments],
   );
   const selectedWithdrawal = useMemo(
-    () => withdrawEnrollments.find((record) => record.id === enrollmentId),
-    [withdrawEnrollments, enrollmentId],
+    () => allEnrollments.find((record) => record.id === enrollmentId),
+    [allEnrollments, enrollmentId],
   );
   const selectedStudent = useMemo(
     () => students.find((student) => student.college === enrollForm.studentCollege && student.id === enrollForm.studentId),
@@ -213,30 +203,27 @@ export function IntegrationPage() {
     }));
   };
 
-  const selectCourse = (course: CourseRecord) => {
-    setEnrollForm((form) => ({
-      ...form,
-      courseCollege: course.college,
-      courseId: course.id,
-    }));
-  };
-
   const enroll = async (event: FormEvent) => {
     event.preventDefault();
     setSubmitting(true);
     setError('');
-    setMessage('');
+    setNotification(null);
     try {
       const records = await api.enrollXml(enrollmentXml);
       const firstRecord = records[0];
-      setMessage(firstRecord ? `已通过 XML 创建选课记录 ${firstRecord.id}` : 'XML 请求未创建选课记录');
+      await load();
       if (firstRecord) {
         setEnrollmentId(firstRecord.id);
-        setWithdrawCollege(firstRecord.courseCollege);
       }
-      await load();
+      setNotification({
+        type: firstRecord ? 'success' : 'error',
+        text: firstRecord ? `已通过 XML 创建选课记录 ${firstRecord.id}` : 'XML 请求未创建选课记录',
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'XML 跨学院选课失败');
+      setNotification({
+        type: 'error',
+        text: actionErrorMessage(err, '选课创建失败，请检查是否重复选课或后端服务状态'),
+      });
     } finally {
       setSubmitting(false);
     }
@@ -246,18 +233,20 @@ export function IntegrationPage() {
     event.preventDefault();
     setSubmitting(true);
     setError('');
-    setMessage('');
+    setNotification(null);
     try {
       const results = await api.withdrawXml(withdrawalXml);
       const firstResult = results[0];
-      setMessage(
-        firstResult?.withdrawn
-          ? `${firstResult.enrollmentId} 已通过 XML 完成退选`
-          : `${enrollmentId} 未找到`,
-      );
-      await Promise.all([load(), loadWithdrawEnrollments()]);
+      await load();
+      setNotification({
+        type: firstResult?.withdrawn ? 'success' : 'error',
+        text: firstResult?.withdrawn ? `${firstResult.enrollmentId} 已通过 XML 完成退选` : `${enrollmentId} 未找到`,
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'XML 退课失败');
+      setNotification({
+        type: 'error',
+        text: actionErrorMessage(err, '退课失败，请检查选课记录是否仍然有效或后端服务状态'),
+      });
     } finally {
       setSubmitting(false);
     }
@@ -277,26 +266,113 @@ export function IntegrationPage() {
       </header>
 
       {error && <div className="form-error">{error}</div>}
-      {message && <div className="notice">{message}</div>}
 
-      <section className="toolbar">
-        <label>
-          共享课程来源
-          <select value={source} onChange={(event) => setSource(event.target.value as CollegeCode)}>
-            {collegeOptions.map((college) => (
-              <option key={college.code} value={college.code}>
-                {college.label} / {college.dbms}
-              </option>
-            ))}
-          </select>
-        </label>
-        {stats && (
-          <div className="toolbar-summary">
-            <span>{stats.totalStudents} 名学生</span>
-            <span>{stats.totalCourses} 门课程</span>
-            <span>{stats.totalEnrollments} 条选课</span>
+      {stats && (
+        <section className="metric-grid">
+          <div className="metric-panel">
+            <span>总学生</span>
+            <strong>{stats.totalStudents}</strong>
           </div>
-        )}
+          <div className="metric-panel">
+            <span>总课程</span>
+            <strong>{stats.totalCourses}</strong>
+          </div>
+          <div className="metric-panel">
+            <span>总选课</span>
+            <strong>{stats.totalEnrollments}</strong>
+          </div>
+          <div className="metric-panel">
+            <span>重叠课程</span>
+            <strong>{stats.overlappingCourses.length}</strong>
+          </div>
+        </section>
+      )}
+
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>课程信息</h2>
+          <span>
+            {loading
+              ? '加载中'
+              : `${allCourses.length} 门课程 / ${allCourses.filter((course) => course.shared).length} 门可跨院选修`}
+          </span>
+        </div>
+        <div className="scroll-table">
+          <DataTable
+            rows={allCourses}
+            emptyText={loading ? '正在加载课程' : '暂无课程'}
+            columns={[
+              { key: 'college', label: '学院', render: (course) => collegeLabel(course.college) },
+              { key: 'id', label: '课程号', render: (course) => course.id },
+              { key: 'name', label: '课程名', render: (course) => course.name },
+              { key: 'hours', label: '课时', render: (course) => course.hours },
+              { key: 'credits', label: '学分', render: (course) => course.credits },
+              { key: 'teacher', label: '教师', render: (course) => course.teacher },
+              { key: 'location', label: '地点', render: (course) => course.location },
+              {
+                key: 'shared',
+                label: '可跨院选修',
+                render: (course) => (
+                  <span className={course.shared ? 'status-badge status-active' : 'status-badge'}>
+                    {course.shared ? '是' : '否'}
+                  </span>
+                ),
+              },
+            ]}
+          />
+        </div>
+      </section>
+
+      <section className="split-grid">
+        <div className="panel">
+          <div className="panel-heading">
+            <h2>学生信息</h2>
+            <span>{loading ? '加载中' : `${allStudents.length} 条`}</span>
+          </div>
+          <div className="scroll-table">
+            <DataTable
+              rows={allStudents}
+              emptyText={loading ? '正在加载学生' : '暂无学生'}
+              columns={[
+                { key: 'college', label: '学院', render: (student) => collegeLabel(student.college) },
+                { key: 'id', label: '学号', render: (student) => student.id },
+                { key: 'name', label: '姓名', render: (student) => student.name },
+                { key: 'gender', label: '性别', render: (student) => student.gender },
+                { key: 'major', label: '专业', render: (student) => displayCollegeText(student.major) },
+                { key: 'grade', label: '年级', render: (student) => student.grade },
+              ]}
+            />
+          </div>
+        </div>
+        <div className="panel">
+          <div className="panel-heading">
+            <h2>选课信息</h2>
+            <span>{loading ? '加载中' : `${allEnrollments.length} 条`}</span>
+          </div>
+          <div className="scroll-table">
+            <DataTable
+              rows={allEnrollments}
+              emptyText={loading ? '正在加载选课' : '暂无选课'}
+              columns={[
+                { key: 'id', label: '记录号', render: (enrollment) => enrollment.id },
+                { key: 'studentCollege', label: '学生学院', render: (enrollment) => collegeLabel(enrollment.studentCollege) },
+                { key: 'studentId', label: '学生', render: (enrollment) => enrollment.studentId },
+                { key: 'courseCollege', label: '课程学院', render: (enrollment) => collegeLabel(enrollment.courseCollege) },
+                { key: 'courseId', label: '课程', render: (enrollment) => enrollment.courseId },
+                { key: 'score', label: '成绩', render: (enrollment) => enrollment.score },
+                {
+                  key: 'status',
+                  label: '状态',
+                  render: (enrollment) => (
+                    <span className={`status-badge status-${enrollment.status.toLowerCase()}`}>
+                      {statusLabel(enrollment.status)}
+                    </span>
+                  ),
+                },
+              ]}
+            />
+          </div>
+        </div>
       </section>
 
       <section className="split-grid">
@@ -343,11 +419,7 @@ export function IntegrationPage() {
               课程学院
               <select
                 value={enrollForm.courseCollege}
-                onChange={(event) => {
-                  const nextCollege = event.target.value as CollegeCode;
-                  setSource(nextCollege);
-                  updateEnrollForm('courseCollege', nextCollege);
-                }}
+                onChange={(event) => updateEnrollForm('courseCollege', event.target.value as CollegeCode)}
               >
                 {collegeOptions.map((college) => (
                   <option key={college.code} value={college.code}>
@@ -364,7 +436,7 @@ export function IntegrationPage() {
                 onChange={(event) => updateEnrollForm('courseId', event.target.value)}
               >
                 {courses.length === 0 ? (
-                  <option value={enrollForm.courseId}>{loading ? '加载课程中' : '暂无共享课程'}</option>
+                  <option value={enrollForm.courseId}>{loading ? '加载课程中' : '暂无可跨院选修课程'}</option>
                 ) : (
                   courses.map((course) => (
                     <option key={course.id} value={course.id}>
@@ -400,7 +472,7 @@ export function IntegrationPage() {
                 </div>
                 <div>
                   <dt>专业</dt>
-                  <dd>{selectedStudent?.major ?? '暂无'}</dd>
+                  <dd>{selectedStudent ? displayCollegeText(selectedStudent.major) : '暂无'}</dd>
                 </div>
                 <div>
                   <dt>年级</dt>
@@ -449,31 +521,20 @@ export function IntegrationPage() {
             <span>{selectedWithdrawal ? statusLabel(selectedWithdrawal.status) : '选择选课记录'}</span>
           </div>
           <form className="form-grid" onSubmit={withdraw}>
-            <label>
-              记录学院
-              <select value={withdrawCollege} onChange={(event) => setWithdrawCollege(event.target.value as CollegeCode)}>
-                {collegeOptions.map((college) => (
-                  <option key={college.code} value={college.code}>
-                    {college.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
+            <label className="form-action">
               选课记录号
               <select
                 value={enrollmentId}
-                disabled={loadingWithdrawEnrollments || withdrawEnrollmentOptions.length === 0}
+                disabled={loading || withdrawEnrollmentOptions.length === 0}
                 onChange={(event) => setEnrollmentId(event.target.value)}
               >
                 {withdrawEnrollmentOptions.length === 0 ? (
-                  <option value={enrollmentId}>
-                    {loadingWithdrawEnrollments ? '加载选课记录中' : '暂无可退选记录'}
-                  </option>
+                  <option value={enrollmentId}>{loading ? '加载选课记录中' : '暂无可退选记录'}</option>
                 ) : (
                   withdrawEnrollmentOptions.map((record) => (
                     <option key={record.id} value={record.id}>
-                      {record.id} / {record.studentId} / {record.courseId}
+                      {record.id} / {collegeLabel(record.studentCollege)} {record.studentId} /{' '}
+                      {collegeLabel(record.courseCollege)} {record.courseId}
                     </option>
                   ))
                 )}
@@ -481,7 +542,7 @@ export function IntegrationPage() {
             </label>
             <button
               className="danger-button form-action"
-              disabled={submitting || !selectedWithdrawal}
+              disabled={submitting || !selectedWithdrawal || selectedWithdrawal.status === 'WITHDRAWN'}
               title="退选课程"
               type="submit"
             >
@@ -538,7 +599,7 @@ export function IntegrationPage() {
                 </div>
                 <div>
                   <dt>专业</dt>
-                  <dd>{selectedWithdrawalStudent?.major ?? '暂无'}</dd>
+                  <dd>{selectedWithdrawalStudent ? displayCollegeText(selectedWithdrawalStudent.major) : '暂无'}</dd>
                 </div>
                 <div>
                   <dt>年级</dt>
@@ -582,54 +643,28 @@ export function IntegrationPage() {
         </div>
       </section>
 
-      <section className="panel">
-        <div className="panel-heading">
-          <h2>共享课程</h2>
-          <span>{loading ? '加载中' : `${courses.length} 门`}</span>
+      {notification && (
+        <div className="notification-backdrop">
+          <div
+            aria-labelledby="integration-notification-title"
+            aria-modal="true"
+            className="notification-dialog"
+            role="alertdialog"
+          >
+            <span className={`notification-status notification-status-${notification.type}`}>
+              {notification.type === 'success' ? '操作成功' : '操作失败'}
+            </span>
+            <h2 id="integration-notification-title">
+              {notification.type === 'success' ? '处理完成' : '需要处理'}
+            </h2>
+            <p>{notification.text}</p>
+            <div className="notification-actions">
+              <button className="primary-button" onClick={() => setNotification(null)} type="button">
+                知道了
+              </button>
+            </div>
+          </div>
         </div>
-        <DataTable
-          rows={courses}
-          emptyText={loading ? '正在加载共享课程' : '暂无共享课程'}
-          columns={[
-            { key: 'college', label: '来源', render: (course) => `学院${course.college}` },
-            { key: 'id', label: '课程号', render: (course) => course.id },
-            { key: 'name', label: '课程名', render: (course) => course.name },
-            { key: 'hours', label: '课时', render: (course) => course.hours },
-            { key: 'credits', label: '学分', render: (course) => course.credits },
-            { key: 'teacher', label: '教师', render: (course) => course.teacher },
-            { key: 'location', label: '地点', render: (course) => course.location },
-            {
-              key: 'action',
-              label: '操作',
-              render: (course) => (
-                <button className="table-action" onClick={() => selectCourse(course)} type="button">
-                  选择
-                </button>
-              ),
-            },
-          ]}
-        />
-      </section>
-
-      {stats && (
-        <section className="metric-grid">
-          <div className="metric-panel">
-            <span>总学生</span>
-            <strong>{stats.totalStudents}</strong>
-          </div>
-          <div className="metric-panel">
-            <span>总课程</span>
-            <strong>{stats.totalCourses}</strong>
-          </div>
-          <div className="metric-panel">
-            <span>总选课</span>
-            <strong>{stats.totalEnrollments}</strong>
-          </div>
-          <div className="metric-panel">
-            <span>重叠课程</span>
-            <strong>{stats.overlappingCourses.length}</strong>
-          </div>
-        </section>
       )}
     </section>
   );
@@ -654,10 +689,6 @@ function toWithdrawalXml(enrollmentId: string) {
 </withdrawRequests>`;
 }
 
-function collegeLabel(code: CollegeCode) {
-  return collegeOptions.find((college) => college.code === code)?.label ?? `学院${code}`;
-}
-
 function statusLabel(status: string) {
   if (status === 'ACTIVE') {
     return '有效';
@@ -666,6 +697,13 @@ function statusLabel(status: string) {
     return '已退选';
   }
   return status || '暂无';
+}
+
+function actionErrorMessage(err: unknown, fallback: string) {
+  if (!(err instanceof Error) || !err.message || err.message === 'Internal Server Error') {
+    return fallback;
+  }
+  return err.message;
 }
 
 function escapeXml(value: string) {

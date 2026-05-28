@@ -18,6 +18,24 @@ class OracleInitSqlContractTest {
             .isEqualTo(2);
     }
 
+    @Test
+    void courseTextColumnsUseCharacterLengthSemanticsForChineseValues() throws IOException {
+        String sql = Files.readString(oracleInitSqlPath());
+
+        assertThat(sql).contains("course_name VARCHAR2(16 CHAR) NOT NULL");
+        assertThat(sql).contains("location    VARCHAR2(20 CHAR) NOT NULL");
+        assertThat(sql).contains("'商业数据分析'");
+    }
+
+    @Test
+    void seedsMeaningfulChineseStudentNames() throws IOException {
+        String sql = Files.readString(oracleInitSqlPath());
+
+        assertThat(sql).contains("student_names AS");
+        assertThat(sql).contains("'周'", "'景文'");
+        assertThat(sql).doesNotContain("'B学生' ||");
+    }
+
     private Path oracleInitSqlPath() {
         Path fromBackend = Path.of("../database/oracle/init.sql");
         if (Files.exists(fromBackend)) {

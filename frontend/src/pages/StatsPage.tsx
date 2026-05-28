@@ -3,6 +3,7 @@ import { RefreshCw } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { api } from '../api/client';
 import type { StatsSummary } from '../types/domain';
+import { collegeLabel } from '../utils/collegeLabels';
 
 export function StatsPage() {
   const [stats, setStats] = useState<StatsSummary | null>(null);
@@ -24,6 +25,12 @@ export function StatsPage() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  const collegeStats =
+    stats?.colleges.map((college) => ({
+      ...college,
+      displayName: collegeLabel(college.college),
+    })) ?? [];
 
   if (loading && !stats) {
     return <div className="empty-state">统计数据加载中</div>;
@@ -73,7 +80,7 @@ export function StatsPage() {
               <span>学生 / 课程 / 选课</span>
             </div>
             <ResponsiveContainer width="100%" height={320}>
-              <BarChart data={stats.colleges}>
+              <BarChart data={collegeStats}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="displayName" />
                 <YAxis />
@@ -88,10 +95,10 @@ export function StatsPage() {
           <section className="panel">
             <div className="panel-heading">
               <h2>学院明细</h2>
-              <span>{stats.colleges.length} 个学院</span>
+              <span>{collegeStats.length} 个学院</span>
             </div>
             <div className="college-stat-list">
-              {stats.colleges.map((college) => (
+              {collegeStats.map((college) => (
                 <div className="college-stat-row" key={college.college}>
                   <strong>{college.displayName}</strong>
                   <span>{college.dbms}</span>

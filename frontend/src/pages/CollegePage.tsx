@@ -4,6 +4,7 @@ import { Navigate, useParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { DataTable } from '../components/DataTable';
 import type { CollegeCode, CourseRecord, EnrollmentRecord, LoginResponse, StudentRecord } from '../types/domain';
+import { collegeLabel, displayCollegeText } from '../utils/collegeLabels';
 
 interface CollegePageProps {
   session: LoginResponse;
@@ -33,6 +34,7 @@ function statusLabel(status: string): string {
 export function CollegePage({ session }: CollegePageProps) {
   const params = useParams();
   const college = isCollegeCode(params.college) ? params.college : session.college ?? 'A';
+  const collegeName = collegeLabel(college);
   const canView = session.role === 'INTEGRATION_ADMIN' || college === session.college;
   const [students, setStudents] = useState<StudentRecord[]>([]);
   const [courses, setCourses] = useState<CourseRecord[]>([]);
@@ -81,7 +83,7 @@ export function CollegePage({ session }: CollegePageProps) {
       <header className="page-header">
         <div>
           <p className="eyebrow">College {college}</p>
-          <h1>学院{college} 教务系统</h1>
+          <h1>{collegeName}教务系统</h1>
         </div>
         <button className="secondary-button" disabled={loading} onClick={load} type="button">
           <RefreshCw size={17} />
@@ -113,7 +115,7 @@ export function CollegePage({ session }: CollegePageProps) {
       <section className="panel">
         <div className="panel-heading">
           <h2>课程信息</h2>
-          <span>{loading ? '加载中' : `${courses.filter((course) => course.shared).length} 门共享`}</span>
+          <span>{loading ? '加载中' : `${courses.filter((course) => course.shared).length} 门可跨院选修`}</span>
         </div>
         <DataTable
           rows={courses}
@@ -127,7 +129,7 @@ export function CollegePage({ session }: CollegePageProps) {
             { key: 'location', label: '地点', render: (course) => course.location },
             {
               key: 'shared',
-              label: '共享',
+              label: '可跨院选修',
               render: (course) => (
                 <span className={course.shared ? 'status-badge status-active' : 'status-badge'}>
                   {course.shared ? '是' : '否'}
@@ -152,7 +154,7 @@ export function CollegePage({ session }: CollegePageProps) {
                 { key: 'id', label: '学号', render: (student) => student.id },
                 { key: 'name', label: '姓名', render: (student) => student.name },
                 { key: 'gender', label: '性别', render: (student) => student.gender },
-                { key: 'major', label: '专业', render: (student) => student.major },
+                { key: 'major', label: '专业', render: (student) => displayCollegeText(student.major) },
                 { key: 'grade', label: '年级', render: (student) => student.grade },
               ]}
             />
@@ -169,7 +171,7 @@ export function CollegePage({ session }: CollegePageProps) {
               emptyText={loading ? '正在加载选课' : '暂无选课'}
               columns={[
                 { key: 'id', label: '记录号', render: (enrollment) => enrollment.id },
-                { key: 'studentCollege', label: '学生学院', render: (enrollment) => `学院${enrollment.studentCollege}` },
+                { key: 'studentCollege', label: '学生学院', render: (enrollment) => collegeLabel(enrollment.studentCollege) },
                 { key: 'studentId', label: '学生', render: (enrollment) => enrollment.studentId },
                 { key: 'courseId', label: '课程', render: (enrollment) => enrollment.courseId },
                 { key: 'score', label: '成绩', render: (enrollment) => enrollment.score },

@@ -126,6 +126,15 @@ WITH numbers AS (
     SELECT n + 1
     FROM numbers
     WHERE n < 50
+),
+student_names AS (
+    SELECT
+        n,
+        CONCAT(
+            CHOOSE(((n - 1) % 10) + 1, N'林', N'陈', N'赵', N'周', N'吴', N'郑', N'王', N'李', N'张', N'刘'),
+            CHOOSE(((n - 1) / 10) + 1, N'安然', N'子昂', N'明轩', N'清越', N'星河')
+        ) AS student_name
+    FROM numbers
 )
 INSERT INTO dbo.A_STUDENT (student_no, student_name, gender_name, department_name, linked_account)
 SELECT
@@ -133,26 +142,26 @@ SELECT
         CAST(2022 + (n % 3) AS VARCHAR(4)),
         RIGHT(CONCAT('00000000', n), 8)
     ),
-    CONCAT(N'A', RIGHT(CONCAT('000000000', n), 9)),
+    student_name,
     CASE WHEN n % 2 = 0 THEN N'女' ELSE N'男' END,
     N'学院A',
     CONCAT('acc', RIGHT(CONCAT('0000000', n), 7))
-FROM numbers
+FROM student_names
 OPTION (MAXRECURSION 50);
 GO
 
 INSERT INTO dbo.A_COURSE (course_no, course_name, credit_text, teacher_name, teaching_place, shared_flag)
 VALUES
-    ('A0000001', N'数据库系统', '3', N'A教师01', N'实验楼101', 'Y'),
-    ('A0000002', N'数据集成', '4', N'A教师02', N'实验楼102', 'Y'),
-    ('A0000003', N'软件工程', '2', N'A教师03', N'实验楼103', 'Y'),
-    ('A0000004', N'计算机网络', '3', N'A教师04', N'实验楼104', 'Y'),
-    ('A0000005', N'操作系统', '4', N'A教师05', N'实验楼105', 'Y'),
-    ('A0000006', N'人工智能', '2', N'A教师06', N'实验楼106', 'Y'),
-    ('A0000007', N'高等数学', '3', N'A教师07', N'教学楼201', 'N'),
-    ('A0000008', N'大学英语', '4', N'A教师08', N'教学楼202', 'N'),
-    ('A0000009', N'信息安全', '2', N'A教师09', N'实验楼203', 'N'),
-    ('A0000010', N'Web开发', '3', N'A教师10', N'实验楼204', 'N');
+    ('A0000001', N'算法设计', '3', N'A教师01', N'实验楼101', 'Y'),
+    ('A0000002', N'软件工程实践', '4', N'A教师02', N'实验楼102', 'Y'),
+    ('A0000003', N'网络空间安全', '2', N'A教师03', N'实验楼103', 'Y'),
+    ('A0000004', N'智能系统导论', '3', N'A教师04', N'实验楼104', 'Y'),
+    ('A0000005', N'云计算基础', '4', N'A教师05', N'实验楼105', 'Y'),
+    ('A0000006', N'人机交互', '2', N'A教师06', N'实验楼106', 'Y'),
+    ('A0000007', N'离散数学', '3', N'A教师07', N'教学楼201', 'N'),
+    ('A0000008', N'工程英语', '4', N'A教师08', N'教学楼202', 'N'),
+    ('A0000009', N'嵌入式系统', '2', N'A教师09', N'实验楼203', 'N'),
+    ('A0000010', N'移动应用开发', '3', N'A教师10', N'实验楼204', 'N');
 GO
 
 WITH students AS (

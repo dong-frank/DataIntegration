@@ -23,7 +23,7 @@ class SqlServerInitSqlContractTest {
         assertThat(sql).contains("course_name NVARCHAR(10)");
         assertThat(sql).contains("teacher_name NVARCHAR(10)");
         assertThat(sql).contains("teaching_place NVARCHAR(20)");
-        assertThat(sql).contains("N'数据库系统'");
+        assertThat(sql).contains("N'算法设计'");
         assertThat(sql).contains("N'实验楼101'");
     }
 
@@ -34,5 +34,14 @@ class SqlServerInitSqlContractTest {
         assertThat(sql).contains("course_offsets AS");
         assertThat(sql).doesNotContain("\noffsets AS");
         assertThat(sql).contains("CROSS JOIN course_offsets");
+    }
+
+    @Test
+    void seedsMeaningfulChineseStudentNames() throws IOException {
+        String sql = Files.readString(INIT_SQL, StandardCharsets.UTF_8);
+
+        assertThat(sql).contains("student_names AS");
+        assertThat(sql).contains("N'林'", "N'安然'");
+        assertThat(sql).doesNotContain("CONCAT(N'A'");
     }
 }

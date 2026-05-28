@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.dataintegration.integration.DuplicateEnrollmentException;
 import com.example.dataintegration.integration.EnrollmentCreateRequest;
 import com.example.dataintegration.integration.WithdrawalResult;
 
@@ -52,6 +53,7 @@ public class SqlServerCollegeADataService {
     public EnrollmentRecord createEnrollment(EnrollmentCreateRequest request) {
         assertCourseExists(request.courseId());
         assertLocalStudentExists(request.studentId());
+        assertLocalEnrollmentNotExists(request);
         jdbc.update(
             "INSERT INTO dbo.A_SELECTION (course_no, student_no, score_text) VALUES (?, ?, '0')",
             request.courseId(),
@@ -82,6 +84,7 @@ public class SqlServerCollegeADataService {
 
         assertCourseExists(request.courseId());
         upsertImportedStudent(sourceStudent);
+        assertImportedEnrollmentNotExists(request);
 
         jdbc.update(
             """
@@ -219,6 +222,43 @@ public class SqlServerCollegeADataService {
             sourceStudent.gender(),
             sourceStudent.major(),
             Date.valueOf(LocalDate.now())
+        );
+    }
+
+    private void assertLocalEnrollmentNotExists(EnrollmentCreateRequest request) {
+        Integer count = jdbc.queryForObject(
+            "SELECT COUNT(*) FROM dbo.A_SELECTION WHERE course_no = ? AND student_no = ?",
+            Integer.class,
+            request.courseId(),
+            request.studentId()
+        );
+        if (count != null && count > 0) {
+            throw duplicateEnrollment(request);
+        }
+    }
+
+    private void assertImportedEnrollmentNotExists(EnrollmentCreateRequest request) {
+        Integer count = jdbc.queryForObject(
+            """
+            SELECT COUNT(*) FROM dbo.A_IMPORTED_SELECTION
+            WHERE course_no = ? AND source_college = ? AND student_no = ?
+            """,
+            Integer.class,
+            request.courseId(),
+            request.studentCollege().name(),
+            request.studentId()
+        );
+        if (count != null && count > 0) {
+            throw duplicateEnrollment(request);
+        }
+    }
+
+    private DuplicateEnrollmentException duplicateEnrollment(EnrollmentCreateRequest request) {
+        return new DuplicateEnrollmentException(
+            request.studentCollege(),
+            request.studentId(),
+            request.courseCollege(),
+            request.courseId()
         );
     }
 
