@@ -1,0 +1,119 @@
+﻿severity,table,rule_id,rule_name,group_no,dept_no,count,example_detail
+ERROR,sc,COURSE_NOT_FOUND,选课课程不存在,8,A,100,sc 中的 group_no + dept_no + course_id 在 course 表不存在
+ERROR,sc,COURSE_NOT_FOUND,选课课程不存在,8,B,250,sc 中的 group_no + dept_no + course_id 在 course 表不存在
+ERROR,sc,COURSE_NOT_FOUND,选课课程不存在,8,C,150,sc 中的 group_no + dept_no + course_id 在 course 表不存在
+ERROR,sc,COURSE_NOT_FOUND,选课课程不存在,12,A,1,sc 中的 group_no + dept_no + course_id 在 course 表不存在
+ERROR,sc,COURSE_NOT_FOUND,选课课程不存在,23,B,125,sc 中的 group_no + dept_no + course_id 在 course 表不存在
+ERROR,sc,COURSE_NOT_FOUND,选课课程不存在,23,C,125,sc 中的 group_no + dept_no + course_id 在 course 表不存在
+ERROR,sc,COURSE_NOT_FOUND,选课课程不存在,28,A,50,sc 中的 group_no + dept_no + course_id 在 course 表不存在
+ERROR,sc,COURSE_NOT_FOUND,选课课程不存在,28,B,50,sc 中的 group_no + dept_no + course_id 在 course 表不存在
+ERROR,sc,COURSE_NOT_FOUND,选课课程不存在,28,C,50,sc 中的 group_no + dept_no + course_id 在 course 表不存在
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,2,B,720,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,2,C,840,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,3,B,26,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,3,C,175,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,4,A,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,4,B,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,4,C,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,12,A,251,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,12,B,251,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,19,A,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,19,B,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,19,C,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,20,A,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,20,B,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,20,C,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,22,A,251,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,22,B,252,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,27,A,149,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,27,B,1,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,27,C,1,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,28,A,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,SCORE_MISSING,成绩缺失或占位,28,B,250,score 为空、NUL、NULL 或其他缺失占位，无法参与均分/及格率计算
+ERROR,sc,STUDENT_NOT_FOUND,选课学生不存在,7,B,181,sc 中的 group_no + dept_no + student_id 在 student 表不存在
+ERROR,sc,STUDENT_NOT_FOUND,选课学生不存在,7,C,129,sc 中的 group_no + dept_no + student_id 在 student 表不存在
+ERROR,sc,STUDENT_NOT_FOUND,选课学生不存在,12,B,1,sc 中的 group_no + dept_no + student_id 在 student 表不存在
+WARNING,course,DEPT_COUNT_DEVIATION,院系提交量偏离标准,2,A,1,course 表第 2 组 A 院实际 104 条，标准为 10 条，偏差 +94
+WARNING,course,DEPT_COUNT_DEVIATION,院系提交量偏离标准,2,B,1,course 表第 2 组 B 院实际 104 条，标准为 10 条，偏差 +94
+WARNING,course,DEPT_COUNT_DEVIATION,院系提交量偏离标准,2,C,1,course 表第 2 组 C 院实际 104 条，标准为 10 条，偏差 +94
+WARNING,course,DEPT_COUNT_DEVIATION,院系提交量偏离标准,8,A,1,course 表第 8 组 A 院实际 6 条，标准为 10 条，偏差 -4
+WARNING,course,DEPT_COUNT_DEVIATION,院系提交量偏离标准,8,C,1,course 表第 8 组 C 院实际 4 条，标准为 10 条，偏差 -6
+WARNING,course,DEPT_COUNT_DEVIATION,院系提交量偏离标准,23,B,1,course 表第 23 组 B 院实际 5 条，标准为 10 条，偏差 -5
+WARNING,course,DEPT_COUNT_DEVIATION,院系提交量偏离标准,23,C,1,course 表第 23 组 C 院实际 5 条，标准为 10 条，偏差 -5
+WARNING,course,GROUP_COUNT_DEVIATION,组提交总量偏离标准,2,ALL,1,course 表第 2 组实际 312 条，标准为 30 条，偏差 +282
+WARNING,course,GROUP_COUNT_DEVIATION,组提交总量偏离标准,8,ALL,1,course 表第 8 组实际 10 条，标准为 30 条，偏差 -20
+WARNING,course,GROUP_COUNT_DEVIATION,组提交总量偏离标准,23,ALL,1,course 表第 23 组实际 20 条，标准为 30 条，偏差 -10
+WARNING,course,INVALID_HOURS,学时非数值或缺失,3,A,6,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,7,A,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,7,B,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,7,C,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,10,A,20,class_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,10,B,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,12,A,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,12,B,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,12,C,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,19,A,20,class_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,19,B,20,class_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,19,C,20,class_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,27,A,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,27,B,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,27,C,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,28,A,20,class_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,28,B,10,practice_hours 应为非负数值
+WARNING,course,INVALID_HOURS,学时非数值或缺失,28,C,10,practice_hours 应为非负数值
+WARNING,course,INVALID_SHARE_FLAG,共享标记写法异常,27,A,10,share_flag 建议统一为 0/1 或 Y/N
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,2,A,1,sc 表第 2 组 A 院实际 1125 条，标准为 250 条，偏差 +875
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,2,B,1,sc 表第 2 组 B 院实际 1765 条，标准为 250 条，偏差 +1515
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,2,C,1,sc 表第 2 组 C 院实际 1865 条，标准为 250 条，偏差 +1615
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,3,B,1,sc 表第 3 组 B 院实际 26 条，标准为 250 条，偏差 -224
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,7,A,1,sc 表第 7 组 A 院实际 233 条，标准为 250 条，偏差 -17
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,7,B,1,sc 表第 7 组 B 院实际 348 条，标准为 250 条，偏差 +98
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,7,C,1,sc 表第 7 组 C 院实际 169 条，标准为 250 条，偏差 -81
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,12,A,1,sc 表第 12 组 A 院实际 251 条，标准为 250 条，偏差 +1
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,12,B,1,sc 表第 12 组 B 院实际 251 条，标准为 250 条，偏差 +1
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,22,A,1,sc 表第 22 组 A 院实际 251 条，标准为 250 条，偏差 +1
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,22,B,1,sc 表第 22 组 B 院实际 252 条，标准为 250 条，偏差 +2
+WARNING,sc,DEPT_COUNT_DEVIATION,院系提交量偏离标准,27,C,1,sc 表第 27 组 C 院实际 251 条，标准为 250 条，偏差 +1
+WARNING,sc,GROUP_COUNT_DEVIATION,组提交总量偏离标准,2,ALL,1,sc 表第 2 组实际 4755 条，标准为 750 条，偏差 +4005
+WARNING,sc,GROUP_COUNT_DEVIATION,组提交总量偏离标准,3,ALL,1,sc 表第 3 组实际 526 条，标准为 750 条，偏差 -224
+WARNING,sc,GROUP_COUNT_DEVIATION,组提交总量偏离标准,12,ALL,1,sc 表第 12 组实际 752 条，标准为 750 条，偏差 +2
+WARNING,sc,GROUP_COUNT_DEVIATION,组提交总量偏离标准,22,ALL,1,sc 表第 22 组实际 753 条，标准为 750 条，偏差 +3
+WARNING,sc,GROUP_COUNT_DEVIATION,组提交总量偏离标准,25,ALL,1,sc 表第 25 组实际 500 条，标准为 750 条，偏差 -250
+WARNING,sc,GROUP_COUNT_DEVIATION,组提交总量偏离标准,27,ALL,1,sc 表第 27 组实际 751 条，标准为 750 条，偏差 +1
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,2,A,1,student 表第 2 组 A 院实际 126 条，标准为 50 条，偏差 +76
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,2,B,1,student 表第 2 组 B 院实际 125 条，标准为 50 条，偏差 +75
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,2,C,1,student 表第 2 组 C 院实际 123 条，标准为 50 条，偏差 +73
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,3,C,1,student 表第 3 组 C 院实际 51 条，标准为 50 条，偏差 +1
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,7,A,1,student 表第 7 组 A 院实际 100 条，标准为 50 条，偏差 +50
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,7,B,1,student 表第 7 组 B 院实际 37 条，标准为 50 条，偏差 -13
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,7,C,1,student 表第 7 组 C 院实际 13 条，标准为 50 条，偏差 -37
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,22,A,1,student 表第 22 组 A 院实际 51 条，标准为 50 条，偏差 +1
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,22,B,1,student 表第 22 组 B 院实际 51 条，标准为 50 条，偏差 +1
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,22,C,1,student 表第 22 组 C 院实际 51 条，标准为 50 条，偏差 +1
+WARNING,student,DEPT_COUNT_DEVIATION,院系提交量偏离标准,221250099,C,1,student 表第 221250099 组 C 院实际 1 条，标准为 50 条，偏差 -49
+WARNING,student,GROUP_COUNT_DEVIATION,组提交总量偏离标准,2,ALL,1,student 表第 2 组实际 374 条，标准为 150 条，偏差 +224
+WARNING,student,GROUP_COUNT_DEVIATION,组提交总量偏离标准,3,ALL,1,student 表第 3 组实际 151 条，标准为 150 条，偏差 +1
+WARNING,student,GROUP_COUNT_DEVIATION,组提交总量偏离标准,22,ALL,1,student 表第 22 组实际 153 条，标准为 150 条，偏差 +3
+WARNING,student,GROUP_COUNT_DEVIATION,组提交总量偏离标准,25,ALL,1,student 表第 25 组实际 100 条，标准为 150 条，偏差 -50
+WARNING,student,GROUP_COUNT_DEVIATION,组提交总量偏离标准,221250099,ALL,1,student 表第 221250099 组实际 1 条，标准为 150 条，偏差 -149
+WARNING,student,NON_STANDARD_GENDER,性别写法非标准,21,A,50,gender 建议统一为 男/女 或 M/F 后再分析
+WARNING,student,NON_STANDARD_GENDER,性别写法非标准,21,B,50,gender 建议统一为 男/女 或 M/F 后再分析
+INFO,sc,LOW_SCORE,低分/不及格记录,2,A,103,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,2,B,102,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,2,C,96,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,5,A,250,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,5,B,250,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,5,C,250,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,6,A,49,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,6,B,40,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,6,C,58,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,9,A,22,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,9,B,22,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,9,C,30,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,12,C,250,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,16,B,250,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,16,C,250,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,22,C,250,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,25,B,149,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,25,C,151,score 低于 60，可作为学习效果分析的风险样本
+INFO,sc,LOW_SCORE,低分/不及格记录,28,C,250,score 低于 60，可作为学习效果分析的风险样本

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="944" viewBox="0 0 1280 944">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40" y="44" font-family="Arial, Microsoft YaHei, sans-serif" font-size="26" font-weight="700" fill="#172033">各组 sc 表数值成绩平均分</text>
+<text x="40" y="74" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15" fill="#64748b">仅使用可解析为数字的 score，缺失/占位不参与均值</text>
+<line x1="150.0" y1="100" x2="150.0" y2="858" stroke="#d9e2ec" stroke-width="1"/>
+<text x="150.0" y="886" text-anchor="middle" font-family="Arial, Microsoft YaHei, sans-serif" font-size="12" fill="#64748b">0</text>
+<line x1="352.0" y1="100" x2="352.0" y2="858" stroke="#d9e2ec" stroke-width="1"/>
+<text x="352.0" y="886" text-anchor="middle" font-family="Arial, Microsoft YaHei, sans-serif" font-size="12" fill="#64748b">20</text>
+<line x1="554.0" y1="100" x2="554.0" y2="858" stroke="#d9e2ec" stroke-width="1"/>
+<text x="554.0" y="886" text-anchor="middle" font-family="Arial, Microsoft YaHei, sans-serif" font-size="12" fill="#64748b">40</text>
+<line x1="756.0" y1="100" x2="756.0" y2="858" stroke="#d9e2ec" stroke-width="1"/>
+<text x="756.0" y="886" text-anchor="middle" font-family="Arial, Microsoft YaHei, sans-serif" font-size="12" fill="#64748b">60</text>
+<line x1="958.0" y1="100" x2="958.0" y2="858" stroke="#d9e2ec" stroke-width="1"/>
+<text x="958.0" y="886" text-anchor="middle" font-family="Arial, Microsoft YaHei, sans-serif" font-size="12" fill="#64748b">80</text>
+<line x1="1160.0" y1="100" x2="1160.0" y2="858" stroke="#d9e2ec" stroke-width="1"/>
+<text x="1160.0" y="886" text-anchor="middle" font-family="Arial, Microsoft YaHei, sans-serif" font-size="12" fill="#64748b">100</text>
+<line x1="756.0" y1="88" x2="756.0" y2="858" stroke="#111827" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="764.0" y="82" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" fill="#111827">及格线 60</text>
+<text x="132" y="129" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">1组</text>
+<rect x="150" y="114" width="792.5" height="18" rx="3" fill="#0f766e"/>
+<text x="950.5" y="129" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">78.5</text>
+<text x="132" y="159" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">2组</text>
+<rect x="150" y="144" width="781.1" height="18" rx="3" fill="#0f766e"/>
+<text x="939.1" y="159" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">77.3</text>
+<text x="132" y="189" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">3组</text>
+<rect x="150" y="174" width="774.3" height="18" rx="3" fill="#0f766e"/>
+<text x="932.3" y="189" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">76.7</text>
+<text x="132" y="219" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">4组</text>
+<rect x="150" y="204" width="1.0" height="18" rx="3" fill="#0f766e"/>
+<text x="159.0" y="219" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">0</text>
+<text x="132" y="249" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">5组</text>
+<rect x="150" y="234" width="1.0" height="18" rx="3" fill="#0f766e"/>
+<text x="159.0" y="249" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">0</text>
+<text x="132" y="279" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">6组</text>
+<rect x="150" y="264" width="751.5" height="18" rx="3" fill="#0f766e"/>
+<text x="909.5" y="279" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">74.4</text>
+<text x="132" y="309" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">7组</text>
+<rect x="150" y="294" width="808.5" height="18" rx="3" fill="#0f766e"/>
+<text x="966.5" y="309" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">80.1</text>
+<text x="132" y="339" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">8组</text>
+<rect x="150" y="324" width="842.9" height="18" rx="3" fill="#0f766e"/>
+<text x="1000.9" y="339" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">83.5</text>
+<text x="132" y="369" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">9组</text>
+<rect x="150" y="354" width="757.9" height="18" rx="3" fill="#0f766e"/>
+<text x="915.9" y="369" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">75.0</text>
+<text x="132" y="399" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">10组</text>
+<rect x="150" y="384" width="808.4" height="18" rx="3" fill="#0f766e"/>
+<text x="966.4" y="399" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">80.0</text>
+<text x="132" y="429" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">11组</text>
+<rect x="150" y="414" width="798.7" height="18" rx="3" fill="#0f766e"/>
+<text x="956.7" y="429" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">79.1</text>
+<text x="132" y="459" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">12组</text>
+<rect x="150" y="444" width="1.0" height="18" rx="3" fill="#0f766e"/>
+<text x="159.0" y="459" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">0</text>
+<text x="132" y="489" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">14组</text>
+<rect x="150" y="474" width="807.6" height="18" rx="3" fill="#0f766e"/>
+<text x="965.6" y="489" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">80.0</text>
+<text x="132" y="519" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">15组</text>
+<rect x="150" y="504" width="857.5" height="18" rx="3" fill="#0f766e"/>
+<text x="1015.5" y="519" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">84.9</text>
+<text x="132" y="549" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">16组</text>
+<rect x="150" y="534" width="292.9" height="18" rx="3" fill="#0f766e"/>
+<text x="450.9" y="549" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">29</text>
+<text x="132" y="579" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">17组</text>
+<rect x="150" y="564" width="809.5" height="18" rx="3" fill="#0f766e"/>
+<text x="967.5" y="579" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">80.1</text>
+<text x="132" y="609" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#172033">18组</text>
+<rect x="150" y="594" width="828.2" height="18" rx="3" fill="#dc2626"/>
+<text x="986.2" y="609" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#172033">82</text>
+<text x="132" y="639" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">19组</text>
+<rect x="150" y="624" width="1.0" height="18" rx="3" fill="#0f766e"/>
+<text x="159.0" y="639" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">0</text>
+<text x="132" y="669" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">20组</text>
+<rect x="150" y="654" width="1.0" height="18" rx="3" fill="#0f766e"/>
+<text x="159.0" y="669" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">0</text>
+<text x="132" y="699" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">21组</text>
+<rect x="150" y="684" width="806.2" height="18" rx="3" fill="#0f766e"/>
+<text x="964.2" y="699" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">79.8</text>
+<text x="132" y="729" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">22组</text>
+<rect x="150" y="714" width="1.0" height="18" rx="3" fill="#0f766e"/>
+<text x="159.0" y="729" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">0</text>
+<text x="132" y="759" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">23组</text>
+<rect x="150" y="744" width="780.6" height="18" rx="3" fill="#0f766e"/>
+<text x="938.6" y="759" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">77.3</text>
+<text x="132" y="789" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">25组</text>
+<rect x="150" y="774" width="501.0" height="18" rx="3" fill="#0f766e"/>
+<text x="659.0" y="789" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">49.6</text>
+<text x="132" y="819" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">27组</text>
+<rect x="150" y="804" width="794.4" height="18" rx="3" fill="#0f766e"/>
+<text x="952.4" y="819" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">78.7</text>
+<text x="132" y="849" text-anchor="end" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">28组</text>
+<rect x="150" y="834" width="1.0" height="18" rx="3" fill="#0f766e"/>
+<text x="159.0" y="849" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#172033">0</text>
+<text x="150" y="920" font-family="Arial, Microsoft YaHei, sans-serif" font-size="12" fill="#64748b">平均分是描述性指标，需结合有效成绩数量一起解释。</text>
+</svg>

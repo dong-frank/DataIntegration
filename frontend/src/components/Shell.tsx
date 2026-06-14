@@ -1,16 +1,21 @@
+import type { ReactNode } from 'react';
 import { BarChart3, Database, LogOut, Network } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
 import type { LoginResponse } from '../types/domain';
+import { collegeLabel } from '../utils/collegeLabels';
 
 interface ShellProps {
   session: LoginResponse;
   onLogout: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function Shell({ session, onLogout, children }: ShellProps) {
   const isAdmin = session.role === 'INTEGRATION_ADMIN';
   const home = isAdmin ? '/integration' : `/college/${session.college}`;
+  const roleLabel = isAdmin || !session.college ? '集成管理员' : collegeLabel(session.college);
+  const displayName =
+    isAdmin || !session.college ? session.displayName : `${collegeLabel(session.college)}教务员`;
 
   return (
     <div className="app-shell">
@@ -36,7 +41,10 @@ export function Shell({ session, onLogout, children }: ShellProps) {
           </NavLink>
         </nav>
         <div className="session-box">
-          <span>{session.displayName}</span>
+          <div>
+            <span>{displayName}</span>
+            <small>{roleLabel}</small>
+          </div>
           <button className="icon-button" onClick={onLogout} title="退出登录" type="button">
             <LogOut size={18} />
           </button>

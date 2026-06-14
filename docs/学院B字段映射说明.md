@@ -47,7 +47,7 @@
 | `student_no`    | 学号     | 学号     | `id`           | 直接映射                       |
 | 常量 `'B'`      | —        | 学院标识 | `college`      | 适配视图固定为 `B`             |
 | `student_name`  | 姓名     | 姓名     | `name`         | 直接映射                       |
-| `gender`        | 性别     | 性别     | `gender`       | 直接映射，值为 `男/女`         |
+| `gender`        | 性别     | 性别     | `gender`       | 直接映射，值为 `男/女`；Oracle DDL 使用 `VARCHAR2(2 CHAR)` 避免中文按字节超长 |
 | `major`         | 专业     | 专业     | `major`        | 直接映射                       |
 | `student_no` 前 4 位 | —  | 入学年份 | `grade`        | `TO_NUMBER(SUBSTR(student_no,1,4))` 派生 |
 
@@ -199,7 +199,7 @@ SELECT * FROM vw_adapter_enrollments ORDER BY id;
 - 课程数：10
 - 本院选课记录数：250
 - 跨院导入扩展表初始化为空，留给后续联调写回使用
-- 共享课程：前 6 门课程标记为共享课程（B0001~B0006）
+- 可跨院选修课程：前 6 门课程标记为可跨院选修（B0001~B0006）
 
 ## 12. 数据库连接信息
 

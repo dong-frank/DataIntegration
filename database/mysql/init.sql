@@ -11,6 +11,11 @@ USE college_c;
 DROP VIEW IF EXISTS vw_adapter_enrollments;
 DROP VIEW IF EXISTS vw_adapter_courses;
 DROP VIEW IF EXISTS vw_adapter_students;
+DROP VIEW IF EXISTS vw_hw4_sc;
+DROP VIEW IF EXISTS vw_hw4_courses;
+DROP VIEW IF EXISTS vw_hw4_students;
+DROP TABLE IF EXISTS C_IMPORTED_SELECTION;
+DROP TABLE IF EXISTS C_IMPORTED_STUDENT;
 DROP TABLE IF EXISTS C_SELECTION;
 DROP TABLE IF EXISTS C_COURSE;
 DROP TABLE IF EXISTS C_STUDENT;
@@ -46,71 +51,98 @@ CREATE TABLE C_SELECTION (
     CONSTRAINT FK_C_SELECTION_STUDENT FOREIGN KEY (Sno) REFERENCES C_STUDENT (Sno)
 ) COMMENT '院系C选课表 (PDF 表3-11 选课)';
 
+-- 跨院选课导入的外院学生信息
+CREATE TABLE C_IMPORTED_STUDENT (
+    source_college CHAR(1)     NOT NULL COMMENT '来源学院',
+    student_no     VARCHAR(20) NOT NULL COMMENT '外院学号',
+    student_name   VARCHAR(40) NOT NULL COMMENT '外院学生姓名',
+    gender_name    VARCHAR(2)  NOT NULL COMMENT '性别',
+    major_name     VARCHAR(40) NOT NULL COMMENT '院系/专业',
+    imported_on    DATE        NOT NULL COMMENT '导入日期',
+    CONSTRAINT PK_C_IMPORTED_STUDENT PRIMARY KEY (source_college, student_no),
+    CONSTRAINT CK_C_IMPORTED_STUDENT_SOURCE CHECK (source_college IN ('A','B','C'))
+) COMMENT '院系C跨院导入学生表';
+
+-- 跨院选课导入的选课信息
+CREATE TABLE C_IMPORTED_SELECTION (
+    Cno            CHAR(4)     NOT NULL COMMENT '课程编号',
+    source_college CHAR(1)     NOT NULL COMMENT '来源学院',
+    student_no     VARCHAR(20) NOT NULL COMMENT '外院学号',
+    Grd            INTEGER     NOT NULL DEFAULT 0 COMMENT '成绩',
+    enrolled_on    DATE        NOT NULL COMMENT '选课日期',
+    status_code    VARCHAR(12) NOT NULL DEFAULT 'ACTIVE' COMMENT '选课状态',
+    CONSTRAINT PK_C_IMPORTED_SELECTION PRIMARY KEY (Cno, source_college, student_no),
+    CONSTRAINT FK_C_IMPORTED_SELECTION_COURSE FOREIGN KEY (Cno) REFERENCES C_COURSE (Cno),
+    CONSTRAINT FK_C_IMPORTED_SELECTION_STUDENT FOREIGN KEY (source_college, student_no)
+        REFERENCES C_IMPORTED_STUDENT (source_college, student_no),
+    CONSTRAINT CK_C_IMPORTED_SELECTION_STATUS CHECK (status_code IN ('ACTIVE','WITHDRAWN'))
+) COMMENT '院系C跨院导入选课表';
+
 -- 学生数据 (50 名)
 INSERT INTO C_STUDENT (Sno, Snm, Sex, Sde, Pwd) VALUES
-    ('202300001', '学生001', '男', '学院C', '123456'),
-    ('202400002', '学生002', '女', '学院C', '123456'),
-    ('202200003', '学生003', '男', '学院C', '123456'),
-    ('202300004', '学生004', '女', '学院C', '123456'),
-    ('202400005', '学生005', '男', '学院C', '123456'),
-    ('202200006', '学生006', '女', '学院C', '123456'),
-    ('202300007', '学生007', '男', '学院C', '123456'),
-    ('202400008', '学生008', '女', '学院C', '123456'),
-    ('202200009', '学生009', '男', '学院C', '123456'),
-    ('202300010', '学生010', '女', '学院C', '123456'),
-    ('202400011', '学生011', '男', '学院C', '123456'),
-    ('202200012', '学生012', '女', '学院C', '123456'),
-    ('202300013', '学生013', '男', '学院C', '123456'),
-    ('202400014', '学生014', '女', '学院C', '123456'),
-    ('202200015', '学生015', '男', '学院C', '123456'),
-    ('202300016', '学生016', '女', '学院C', '123456'),
-    ('202400017', '学生017', '男', '学院C', '123456'),
-    ('202200018', '学生018', '女', '学院C', '123456'),
-    ('202300019', '学生019', '男', '学院C', '123456'),
-    ('202400020', '学生020', '女', '学院C', '123456'),
-    ('202200021', '学生021', '男', '学院C', '123456'),
-    ('202300022', '学生022', '女', '学院C', '123456'),
-    ('202400023', '学生023', '男', '学院C', '123456'),
-    ('202200024', '学生024', '女', '学院C', '123456'),
-    ('202300025', '学生025', '男', '学院C', '123456'),
-    ('202400026', '学生026', '女', '学院C', '123456'),
-    ('202200027', '学生027', '男', '学院C', '123456'),
-    ('202300028', '学生028', '女', '学院C', '123456'),
-    ('202400029', '学生029', '男', '学院C', '123456'),
-    ('202200030', '学生030', '女', '学院C', '123456'),
-    ('202300031', '学生031', '男', '学院C', '123456'),
-    ('202400032', '学生032', '女', '学院C', '123456'),
-    ('202200033', '学生033', '男', '学院C', '123456'),
-    ('202300034', '学生034', '女', '学院C', '123456'),
-    ('202400035', '学生035', '男', '学院C', '123456'),
-    ('202200036', '学生036', '女', '学院C', '123456'),
-    ('202300037', '学生037', '男', '学院C', '123456'),
-    ('202400038', '学生038', '女', '学院C', '123456'),
-    ('202200039', '学生039', '男', '学院C', '123456'),
-    ('202300040', '学生040', '女', '学院C', '123456'),
-    ('202400041', '学生041', '男', '学院C', '123456'),
-    ('202200042', '学生042', '女', '学院C', '123456'),
-    ('202300043', '学生043', '男', '学院C', '123456'),
-    ('202400044', '学生044', '女', '学院C', '123456'),
-    ('202200045', '学生045', '男', '学院C', '123456'),
-    ('202300046', '学生046', '女', '学院C', '123456'),
-    ('202400047', '学生047', '男', '学院C', '123456'),
-    ('202200048', '学生048', '女', '学院C', '123456'),
-    ('202300049', '学生049', '男', '学院C', '123456'),
-    ('202400050', '学生050', '女', '学院C', '123456');
+    ('202300001', '苏知夏', '男', '学院C', '123456'),
+    ('202400002', '林知夏', '女', '学院C', '123456'),
+    ('202200003', '陈知夏', '男', '学院C', '123456'),
+    ('202300004', '赵知夏', '女', '学院C', '123456'),
+    ('202400005', '李知夏', '男', '学院C', '123456'),
+    ('202200006', '王知夏', '女', '学院C', '123456'),
+    ('202300007', '刘知夏', '男', '学院C', '123456'),
+    ('202400008', '张知夏', '女', '学院C', '123456'),
+    ('202200009', '吴知夏', '男', '学院C', '123456'),
+    ('202300010', '郑知夏', '女', '学院C', '123456'),
+    ('202400011', '苏青岚', '男', '学院C', '123456'),
+    ('202200012', '林青岚', '女', '学院C', '123456'),
+    ('202300013', '陈青岚', '男', '学院C', '123456'),
+    ('202400014', '赵青岚', '女', '学院C', '123456'),
+    ('202200015', '李青岚', '男', '学院C', '123456'),
+    ('202300016', '王青岚', '女', '学院C', '123456'),
+    ('202400017', '刘青岚', '男', '学院C', '123456'),
+    ('202200018', '张青岚', '女', '学院C', '123456'),
+    ('202300019', '吴青岚', '男', '学院C', '123456'),
+    ('202400020', '郑青岚', '女', '学院C', '123456'),
+    ('202200021', '苏慕白', '男', '学院C', '123456'),
+    ('202300022', '林慕白', '女', '学院C', '123456'),
+    ('202400023', '陈慕白', '男', '学院C', '123456'),
+    ('202200024', '赵慕白', '女', '学院C', '123456'),
+    ('202300025', '李慕白', '男', '学院C', '123456'),
+    ('202400026', '王慕白', '女', '学院C', '123456'),
+    ('202200027', '刘慕白', '男', '学院C', '123456'),
+    ('202300028', '张慕白', '女', '学院C', '123456'),
+    ('202400029', '吴慕白', '男', '学院C', '123456'),
+    ('202200030', '郑慕白', '女', '学院C', '123456'),
+    ('202300031', '苏念初', '男', '学院C', '123456'),
+    ('202400032', '林念初', '女', '学院C', '123456'),
+    ('202200033', '陈念初', '男', '学院C', '123456'),
+    ('202300034', '赵念初', '女', '学院C', '123456'),
+    ('202400035', '李念初', '男', '学院C', '123456'),
+    ('202200036', '王念初', '女', '学院C', '123456'),
+    ('202300037', '刘念初', '男', '学院C', '123456'),
+    ('202400038', '张念初', '女', '学院C', '123456'),
+    ('202200039', '吴念初', '男', '学院C', '123456'),
+    ('202300040', '郑念初', '女', '学院C', '123456'),
+    ('202400041', '苏云舟', '男', '学院C', '123456'),
+    ('202200042', '林云舟', '女', '学院C', '123456'),
+    ('202300043', '陈云舟', '男', '学院C', '123456'),
+    ('202400044', '赵云舟', '女', '学院C', '123456'),
+    ('202200045', '李云舟', '男', '学院C', '123456'),
+    ('202300046', '王云舟', '女', '学院C', '123456'),
+    ('202400047', '刘云舟', '男', '学院C', '123456'),
+    ('202200048', '张云舟', '女', '学院C', '123456'),
+    ('202300049', '吴云舟', '男', '学院C', '123456'),
+    ('202400050', '郑云舟', '女', '学院C', '123456');
 
 -- 课程数据 (10 门)
 INSERT INTO C_COURSE (Cno, Cnm, Ctm, Cpt, Tec, Pla, Share) VALUES
-    ('C001', '数据库系统', 48, 3, 'C教师01', '实验楼101', 'Y'),
-    ('C002', '数据集成', 64, 4, 'C教师02', '实验楼102', 'Y'),
-    ('C003', '软件工程', 32, 2, 'C教师03', '实验楼103', 'Y'),
-    ('C004', '计算机网络', 48, 3, 'C教师04', '实验楼104', 'Y'),
-    ('C005', '操作系统', 64, 4, 'C教师05', '实验楼105', 'Y'),
-    ('C006', '人工智能', 32, 2, 'C教师06', '实验楼106', 'Y'),
-    ('C007', '高等数学', 48, 3, 'C教师07', '教学楼201', 'N'),
-    ('C008', '大学英语', 64, 4, 'C教师08', '教学楼202', 'N'),
-    ('C009', '信息安全', 32, 2, 'C教师09', '实验楼203', 'N'),
-    ('C010', 'Web开发', 48, 3, 'C教师10', '实验楼204', 'N');
+    ('C001', '新媒体传播', 48, 3, 'C教师01', '传媒楼101', 'Y'),
+    ('C002', '数字内容设计', 64, 4, 'C教师02', '传媒楼102', 'Y'),
+    ('C003', '用户研究方法', 32, 2, 'C教师03', '传媒楼103', 'Y'),
+    ('C004', '文化数据分析', 48, 3, 'C教师04', '传媒楼104', 'Y'),
+    ('C005', '公共表达训练', 64, 4, 'C教师05', '传媒楼105', 'Y'),
+    ('C006', '视觉传达基础', 32, 2, 'C教师06', '设计工坊106', 'Y'),
+    ('C007', '新闻写作', 48, 3, 'C教师07', '教学楼201', 'N'),
+    ('C008', '影视剪辑', 64, 4, 'C教师08', '剪辑室202', 'N'),
+    ('C009', '品牌策划', 32, 2, 'C教师09', '传媒楼203', 'N'),
+    ('C010', '交互设计', 48, 3, 'C教师10', '设计工坊204', 'N');
 
 -- 选课数据 (250 条)
 INSERT INTO C_SELECTION (Cno, Sno, Grd) VALUES
@@ -382,10 +414,10 @@ SELECT
     Cno                                  AS id,
     'C'                                  AS college,
     Cnm                                  AS name,
+    Ctm                                  AS hours,
     CAST(Cpt AS DECIMAL(3,1))            AS credits,
     Tec                                  AS teacher,
     Pla                                  AS location,
-    Ctm                                  AS class_hours,
     (CASE WHEN Share = 'Y' THEN 1 ELSE 0 END) AS shared
 FROM C_COURSE;
 
@@ -396,9 +428,56 @@ SELECT
     Sno                                  AS studentId,
     'C'                                  AS courseCollege,
     Cno                                  AS courseId,
-    Grd                                  AS grd,
     DATE_ADD('2026-03-01', INTERVAL (CAST(SUBSTRING(Cno, 2) AS UNSIGNED) - 1) DAY) AS enrolledAt,
-    'ACTIVE'                             AS status
+    'ACTIVE'                             AS status,
+    Grd                                  AS score
+FROM C_SELECTION
+UNION ALL
+SELECT
+    CONCAT(Cno, '-', student_no)          AS id,
+    source_college                       AS studentCollege,
+    student_no                           AS studentId,
+    'C'                                  AS courseCollege,
+    Cno                                  AS courseId,
+    enrolled_on                          AS enrolledAt,
+    status_code                          AS status,
+    Grd                                  AS score
+FROM C_IMPORTED_SELECTION;
+
+-- HW4 服务器导出视图：字段与服务器 MySQL student/course/sc 表保持一致
+CREATE VIEW vw_hw4_students AS
+SELECT
+    Sno                                  AS student_id,
+    Snm                                  AS student_name,
+    Sex                                  AS gender,
+    Sde                                  AS department,
+    Sno                                  AS account,
+    Pwd                                  AS password,
+    '18'                                 AS group_no,
+    'C'                                  AS dept_no
+FROM C_STUDENT;
+
+CREATE VIEW vw_hw4_courses AS
+SELECT
+    Cno                                  AS course_id,
+    Cnm                                  AS course_name,
+    CAST(Cpt AS CHAR)                    AS credit,
+    Tec                                  AS teacher_name,
+    Pla                                  AS location,
+    Share                                AS share_flag,
+    CAST(Ctm AS CHAR)                    AS class_hours,
+    '0'                                  AS practice_hours,
+    '18'                                 AS group_no,
+    'C'                                  AS dept_no
+FROM C_COURSE;
+
+CREATE VIEW vw_hw4_sc AS
+SELECT
+    Cno                                  AS course_id,
+    Sno                                  AS student_id,
+    CAST(Grd AS CHAR)                    AS score,
+    '18'                                 AS group_no,
+    'C'                                  AS dept_no
 FROM C_SELECTION;
 
 -- 数据导入完成

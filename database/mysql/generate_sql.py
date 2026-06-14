@@ -11,23 +11,28 @@
 """
 
 COURSE_NAMES = [
-    "数据库系统", "数据集成", "软件工程", "计算机网络", "操作系统",
-    "人工智能", "高等数学", "大学英语", "信息安全", "Web开发",
+    "新媒体传播", "数字内容设计", "用户研究方法", "文化数据分析", "公共表达训练",
+    "视觉传达基础", "新闻写作", "影视剪辑", "品牌策划", "交互设计",
 ]
 
 PLACES = [
-    "实验楼101", "实验楼102", "实验楼103", "实验楼104", "实验楼105",
-    "实验楼106", "教学楼201", "教学楼202", "实验楼203", "实验楼204",
+    "传媒楼101", "传媒楼102", "传媒楼103", "传媒楼104", "传媒楼105",
+    "设计工坊106", "教学楼201", "剪辑室202", "传媒楼203", "设计工坊204",
 ]
+
+STUDENT_SURNAMES = ["苏", "林", "陈", "赵", "李", "王", "刘", "张", "吴", "郑"]
+STUDENT_GIVEN_NAMES = ["知夏", "青岚", "慕白", "念初", "云舟"]
 
 
 def generate_students():
     students = []
     for i in range(1, 51):
         year = 2022 + (i % 3)
+        name_index = i - 1
         students.append({
             "Sno": f"{year}{i:05d}",  # 9 位
-            "Snm": f"学生{i:03d}",
+            "Snm": f"{STUDENT_SURNAMES[name_index % len(STUDENT_SURNAMES)]}"
+                   f"{STUDENT_GIVEN_NAMES[name_index // len(STUDENT_SURNAMES)]}",
             "Sex": "女" if i % 2 == 0 else "男",
             "Sde": "学院C",
             "Pwd": "123456",
@@ -86,6 +91,11 @@ def generate_sql():
     w("DROP VIEW IF EXISTS vw_adapter_enrollments;")
     w("DROP VIEW IF EXISTS vw_adapter_courses;")
     w("DROP VIEW IF EXISTS vw_adapter_students;")
+    w("DROP VIEW IF EXISTS vw_hw4_sc;")
+    w("DROP VIEW IF EXISTS vw_hw4_courses;")
+    w("DROP VIEW IF EXISTS vw_hw4_students;")
+    w("DROP TABLE IF EXISTS C_IMPORTED_SELECTION;")
+    w("DROP TABLE IF EXISTS C_IMPORTED_STUDENT;")
     w("DROP TABLE IF EXISTS C_SELECTION;")
     w("DROP TABLE IF EXISTS C_COURSE;")
     w("DROP TABLE IF EXISTS C_STUDENT;")
@@ -120,6 +130,33 @@ def generate_sql():
     w("    CONSTRAINT FK_C_SELECTION_COURSE  FOREIGN KEY (Cno) REFERENCES C_COURSE  (Cno),")
     w("    CONSTRAINT FK_C_SELECTION_STUDENT FOREIGN KEY (Sno) REFERENCES C_STUDENT (Sno)")
     w(") COMMENT '院系C选课表 (PDF 表3-11 选课)';")
+    w("")
+    w("-- 跨院选课导入的外院学生信息")
+    w("CREATE TABLE C_IMPORTED_STUDENT (")
+    w("    source_college CHAR(1)     NOT NULL COMMENT '来源学院',")
+    w("    student_no     VARCHAR(20) NOT NULL COMMENT '外院学号',")
+    w("    student_name   VARCHAR(40) NOT NULL COMMENT '外院学生姓名',")
+    w("    gender_name    VARCHAR(2)  NOT NULL COMMENT '性别',")
+    w("    major_name     VARCHAR(40) NOT NULL COMMENT '院系/专业',")
+    w("    imported_on    DATE        NOT NULL COMMENT '导入日期',")
+    w("    CONSTRAINT PK_C_IMPORTED_STUDENT PRIMARY KEY (source_college, student_no),")
+    w("    CONSTRAINT CK_C_IMPORTED_STUDENT_SOURCE CHECK (source_college IN ('A','B','C'))")
+    w(") COMMENT '院系C跨院导入学生表';")
+    w("")
+    w("-- 跨院选课导入的选课信息")
+    w("CREATE TABLE C_IMPORTED_SELECTION (")
+    w("    Cno            CHAR(4)     NOT NULL COMMENT '课程编号',")
+    w("    source_college CHAR(1)     NOT NULL COMMENT '来源学院',")
+    w("    student_no     VARCHAR(20) NOT NULL COMMENT '外院学号',")
+    w("    Grd            INTEGER     NOT NULL DEFAULT 0 COMMENT '成绩',")
+    w("    enrolled_on    DATE        NOT NULL COMMENT '选课日期',")
+    w("    status_code    VARCHAR(12) NOT NULL DEFAULT 'ACTIVE' COMMENT '选课状态',")
+    w("    CONSTRAINT PK_C_IMPORTED_SELECTION PRIMARY KEY (Cno, source_college, student_no),")
+    w("    CONSTRAINT FK_C_IMPORTED_SELECTION_COURSE FOREIGN KEY (Cno) REFERENCES C_COURSE (Cno),")
+    w("    CONSTRAINT FK_C_IMPORTED_SELECTION_STUDENT FOREIGN KEY (source_college, student_no)")
+    w("        REFERENCES C_IMPORTED_STUDENT (source_college, student_no),")
+    w("    CONSTRAINT CK_C_IMPORTED_SELECTION_STATUS CHECK (status_code IN ('ACTIVE','WITHDRAWN'))")
+    w(") COMMENT '院系C跨院导入选课表';")
     w("")
     w("-- 学生数据 (50 名)")
     w("INSERT INTO C_STUDENT (Sno, Snm, Sex, Sde, Pwd) VALUES")
@@ -156,10 +193,10 @@ def generate_sql():
     w("    Cno                                  AS id,")
     w("    'C'                                  AS college,")
     w("    Cnm                                  AS name,")
+    w("    Ctm                                  AS hours,")
     w("    CAST(Cpt AS DECIMAL(3,1))            AS credits,")
     w("    Tec                                  AS teacher,")
     w("    Pla                                  AS location,")
-    w("    Ctm                                  AS class_hours,")
     w("    (CASE WHEN Share = 'Y' THEN 1 ELSE 0 END) AS shared")
     w("FROM C_COURSE;")
     w("")
@@ -170,14 +207,61 @@ def generate_sql():
     w("    Sno                                  AS studentId,")
     w("    'C'                                  AS courseCollege,")
     w("    Cno                                  AS courseId,")
-    w("    Grd                                  AS grd,")
     w("    DATE_ADD('2026-03-01', INTERVAL (CAST(SUBSTRING(Cno, 2) AS UNSIGNED) - 1) DAY) AS enrolledAt,")
-    w("    'ACTIVE'                             AS status")
+    w("    'ACTIVE'                             AS status,")
+    w("    Grd                                  AS score")
+    w("FROM C_SELECTION")
+    w("UNION ALL")
+    w("SELECT")
+    w("    CONCAT(Cno, '-', student_no)          AS id,")
+    w("    source_college                       AS studentCollege,")
+    w("    student_no                           AS studentId,")
+    w("    'C'                                  AS courseCollege,")
+    w("    Cno                                  AS courseId,")
+    w("    enrolled_on                          AS enrolledAt,")
+    w("    status_code                          AS status,")
+    w("    Grd                                  AS score")
+    w("FROM C_IMPORTED_SELECTION;")
+    w("")
+    w("-- HW4 服务器导出视图：字段与服务器 MySQL student/course/sc 表保持一致")
+    w("CREATE VIEW vw_hw4_students AS")
+    w("SELECT")
+    w("    Sno                                  AS student_id,")
+    w("    Snm                                  AS student_name,")
+    w("    Sex                                  AS gender,")
+    w("    Sde                                  AS department,")
+    w("    Sno                                  AS account,")
+    w("    Pwd                                  AS password,")
+    w("    '18'                                 AS group_no,")
+    w("    'C'                                  AS dept_no")
+    w("FROM C_STUDENT;")
+    w("")
+    w("CREATE VIEW vw_hw4_courses AS")
+    w("SELECT")
+    w("    Cno                                  AS course_id,")
+    w("    Cnm                                  AS course_name,")
+    w("    CAST(Cpt AS CHAR)                    AS credit,")
+    w("    Tec                                  AS teacher_name,")
+    w("    Pla                                  AS location,")
+    w("    Share                                AS share_flag,")
+    w("    CAST(Ctm AS CHAR)                    AS class_hours,")
+    w("    '0'                                  AS practice_hours,")
+    w("    '18'                                 AS group_no,")
+    w("    'C'                                  AS dept_no")
+    w("FROM C_COURSE;")
+    w("")
+    w("CREATE VIEW vw_hw4_sc AS")
+    w("SELECT")
+    w("    Cno                                  AS course_id,")
+    w("    Sno                                  AS student_id,")
+    w("    CAST(Grd AS CHAR)                    AS score,")
+    w("    '18'                                 AS group_no,")
+    w("    'C'                                  AS dept_no")
     w("FROM C_SELECTION;")
     w("")
     w("-- 数据导入完成")
 
-    return "\n".join(out)
+    return "\n".join(out) + "\n"
 
 
 if __name__ == "__main__":

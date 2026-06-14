@@ -4,9 +4,9 @@ import { api } from '../api/client';
 import type { LoginResponse } from '../types/domain';
 
 const demoUsers = [
-  { username: 'college-a', label: '学院A', hint: 'SQL Server' },
-  { username: 'college-b', label: '学院B', hint: 'Oracle' },
-  { username: 'college-c', label: '学院C', hint: 'MySQL' },
+  { username: 'college-a', label: '信息工程学院', hint: 'SQL Server' },
+  { username: 'college-b', label: '经济管理学院', hint: 'Oracle' },
+  { username: 'college-c', label: '传媒设计学院', hint: 'MySQL' },
   { username: 'integration-admin', label: '集成服务器', hint: 'Admin' },
 ];
 
@@ -40,20 +40,28 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           <p className="eyebrow">Data Integration</p>
           <h1>教务数据集成系统</h1>
         </div>
+        <div className="demo-account-grid" aria-label="演示账号">
+          {demoUsers.map((user) => (
+            <button
+              className={username === user.username ? 'demo-account active' : 'demo-account'}
+              key={user.username}
+              onClick={() => setUsername(user.username)}
+              type="button"
+            >
+              <strong>{user.label}</strong>
+              <span>{user.hint}</span>
+            </button>
+          ))}
+        </div>
         <form onSubmit={submit} className="login-form">
           <label>
-            用户
-            <select value={username} onChange={(event) => setUsername(event.target.value)}>
-              {demoUsers.map((user) => (
-                <option key={user.username} value={user.username}>
-                  {user.label} / {user.hint}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
             密码
-            <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" />
+            <input
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              type="password"
+            />
           </label>
           {error && <p className="form-error">{error}</p>}
           <button className="primary-button" disabled={loading} type="submit">

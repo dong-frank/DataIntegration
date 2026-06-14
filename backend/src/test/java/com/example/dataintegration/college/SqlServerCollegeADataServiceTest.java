@@ -1,6 +1,7 @@
 package com.example.dataintegration.college;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 
@@ -49,7 +50,8 @@ class SqlServerCollegeADataServiceTest {
             CREATE TABLE dbo.A_SELECTION (
                 course_no VARCHAR(20),
                 student_no VARCHAR(20),
-                score_text VARCHAR(3)
+                score_text VARCHAR(3),
+                CONSTRAINT UQ_A_SELECTION UNIQUE (course_no, student_no)
             )
             """);
         jdbcTemplate.execute("""
@@ -189,6 +191,15 @@ class SqlServerCollegeADataServiceTest {
             "0"
         ));
         assertThat(service.enrollments()).extracting(EnrollmentRecord::id).contains("A0000002-202200000001");
+    }
+
+    @Test
+    void createEnrollmentRejectsDuplicateLocalSelectionWithBusinessMessage() {
+        assertThatThrownBy(() -> service.createEnrollment(
+            new EnrollmentCreateRequest(CollegeCode.A, "202200000001", CollegeCode.A, "A0000001")
+        ))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("该学生已选择课程");
     }
 
     @Test

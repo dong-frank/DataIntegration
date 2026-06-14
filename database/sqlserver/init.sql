@@ -16,6 +16,9 @@ GO
 USE college_a;
 GO
 
+IF OBJECT_ID(N'dbo.vw_hw4_sc', N'V') IS NOT NULL DROP VIEW dbo.vw_hw4_sc;
+IF OBJECT_ID(N'dbo.vw_hw4_courses', N'V') IS NOT NULL DROP VIEW dbo.vw_hw4_courses;
+IF OBJECT_ID(N'dbo.vw_hw4_students', N'V') IS NOT NULL DROP VIEW dbo.vw_hw4_students;
 IF OBJECT_ID(N'dbo.vw_adapter_enrollments', N'V') IS NOT NULL DROP VIEW dbo.vw_adapter_enrollments;
 IF OBJECT_ID(N'dbo.vw_adapter_courses', N'V') IS NOT NULL DROP VIEW dbo.vw_adapter_courses;
 IF OBJECT_ID(N'dbo.vw_adapter_students', N'V') IS NOT NULL DROP VIEW dbo.vw_adapter_students;
@@ -40,9 +43,9 @@ GO
 -- 表 3-3: 院系 A 学生表结构[学号，姓名，性别，院系，关联账户]
 CREATE TABLE dbo.A_STUDENT (
     student_no VARCHAR(12) NOT NULL PRIMARY KEY,
-    student_name VARCHAR(10) NOT NULL,
-    gender_name VARCHAR(2) NOT NULL,
-    department_name VARCHAR(10) NOT NULL,
+    student_name NVARCHAR(10) NOT NULL,
+    gender_name NVARCHAR(2) NOT NULL,
+    department_name NVARCHAR(10) NOT NULL,
     linked_account VARCHAR(10) NOT NULL,
     CONSTRAINT FK_A_STUDENT_ACCOUNT
         FOREIGN KEY (linked_account) REFERENCES dbo.A_ACCOUNT (account_name)
@@ -52,10 +55,10 @@ GO
 -- 表 3-4: 院系 A 课程表结构[课程编号，课程名称，学分，授课老师，授课地点，共享]
 CREATE TABLE dbo.A_COURSE (
     course_no VARCHAR(8) NOT NULL PRIMARY KEY,
-    course_name VARCHAR(10) NOT NULL,
+    course_name NVARCHAR(10) NOT NULL,
     credit_text VARCHAR(2) NOT NULL,
-    teacher_name VARCHAR(10) NOT NULL,
-    teaching_place VARCHAR(20) NOT NULL,
+    teacher_name NVARCHAR(10) NOT NULL,
+    teaching_place NVARCHAR(20) NOT NULL,
     shared_flag CHAR(1) NOT NULL,
     CONSTRAINT CK_A_COURSE_SHARED CHECK (shared_flag IN ('Y', 'N'))
 );
@@ -78,9 +81,9 @@ GO
 CREATE TABLE dbo.A_IMPORTED_STUDENT (
     source_college CHAR(1) NOT NULL,
     student_no VARCHAR(12) NOT NULL,
-    student_name VARCHAR(40) NOT NULL,
-    gender_name VARCHAR(2) NOT NULL,
-    major_name VARCHAR(40) NOT NULL,
+    student_name NVARCHAR(40) NOT NULL,
+    gender_name NVARCHAR(2) NOT NULL,
+    major_name NVARCHAR(40) NOT NULL,
     imported_on DATE NOT NULL CONSTRAINT DF_A_IMPORTED_STUDENT_IMPORTED_ON DEFAULT (CONVERT(DATE, GETDATE())),
     CONSTRAINT PK_A_IMPORTED_STUDENT PRIMARY KEY (source_college, student_no),
     CONSTRAINT CK_A_IMPORTED_STUDENT_SOURCE CHECK (source_college IN ('A', 'B', 'C'))
@@ -126,6 +129,15 @@ WITH numbers AS (
     SELECT n + 1
     FROM numbers
     WHERE n < 50
+),
+student_names AS (
+    SELECT
+        n,
+        CONCAT(
+            CHOOSE(((n - 1) % 10) + 1, N'林', N'陈', N'赵', N'周', N'吴', N'郑', N'王', N'李', N'张', N'刘'),
+            CHOOSE(((n - 1) / 10) + 1, N'安然', N'子昂', N'明轩', N'清越', N'星河')
+        ) AS student_name
+    FROM numbers
 )
 INSERT INTO dbo.A_STUDENT (student_no, student_name, gender_name, department_name, linked_account)
 SELECT
@@ -133,33 +145,33 @@ SELECT
         CAST(2022 + (n % 3) AS VARCHAR(4)),
         RIGHT(CONCAT('00000000', n), 8)
     ),
-    CONCAT('A', RIGHT(CONCAT('000000000', n), 9)),
-    CASE WHEN n % 2 = 0 THEN '女' ELSE '男' END,
-    '学院A',
+    student_name,
+    CASE WHEN n % 2 = 0 THEN N'女' ELSE N'男' END,
+    N'学院A',
     CONCAT('acc', RIGHT(CONCAT('0000000', n), 7))
-FROM numbers
+FROM student_names
 OPTION (MAXRECURSION 50);
 GO
 
 INSERT INTO dbo.A_COURSE (course_no, course_name, credit_text, teacher_name, teaching_place, shared_flag)
 VALUES
-    ('A0000001', '数据库系统', '3', 'A教师01', '实验楼101', 'Y'),
-    ('A0000002', '数据集成', '4', 'A教师02', '实验楼102', 'Y'),
-    ('A0000003', '软件工程', '2', 'A教师03', '实验楼103', 'Y'),
-    ('A0000004', '计算机网络', '3', 'A教师04', '实验楼104', 'Y'),
-    ('A0000005', '操作系统', '4', 'A教师05', '实验楼105', 'Y'),
-    ('A0000006', '人工智能', '2', 'A教师06', '实验楼106', 'Y'),
-    ('A0000007', '高等数学', '3', 'A教师07', '教学楼201', 'N'),
-    ('A0000008', '大学英语', '4', 'A教师08', '教学楼202', 'N'),
-    ('A0000009', '信息安全', '2', 'A教师09', '实验楼203', 'N'),
-    ('A0000010', 'Web开发', '3', 'A教师10', '实验楼204', 'N');
+    ('A0000001', N'算法设计', '3', N'A教师01', N'实验楼101', 'Y'),
+    ('A0000002', N'软件工程实践', '4', N'A教师02', N'实验楼102', 'Y'),
+    ('A0000003', N'网络空间安全', '2', N'A教师03', N'实验楼103', 'Y'),
+    ('A0000004', N'智能系统导论', '3', N'A教师04', N'实验楼104', 'Y'),
+    ('A0000005', N'云计算基础', '4', N'A教师05', N'实验楼105', 'Y'),
+    ('A0000006', N'人机交互', '2', N'A教师06', N'实验楼106', 'Y'),
+    ('A0000007', N'离散数学', '3', N'A教师07', N'教学楼201', 'N'),
+    ('A0000008', N'工程英语', '4', N'A教师08', N'教学楼202', 'N'),
+    ('A0000009', N'嵌入式系统', '2', N'A教师09', N'实验楼203', 'N'),
+    ('A0000010', N'移动应用开发', '3', N'A教师10', N'实验楼204', 'N');
 GO
 
 WITH students AS (
     SELECT ROW_NUMBER() OVER (ORDER BY student_no) AS student_seq, student_no
     FROM dbo.A_STUDENT
 ),
-offsets AS (
+course_offsets AS (
     SELECT 0 AS offset_no
     UNION ALL SELECT 1
     UNION ALL SELECT 2
@@ -172,7 +184,7 @@ SELECT
     student_no,
     CAST(70 + ((student_seq + offset_no) % 25) AS VARCHAR(3))
 FROM students
-CROSS JOIN offsets;
+CROSS JOIN course_offsets;
 GO
 
 CREATE INDEX IX_A_SELECTION_STUDENT_NO ON dbo.A_SELECTION (student_no);
@@ -230,6 +242,48 @@ SELECT
     status_code AS status,
     score_text AS score
 FROM dbo.A_IMPORTED_SELECTION;
+GO
+
+CREATE VIEW dbo.vw_hw4_students
+AS
+SELECT
+    s.student_no AS student_id,
+    s.student_name AS student_name,
+    s.gender_name AS gender,
+    s.department_name AS department,
+    s.linked_account AS account,
+    a.password_code AS [password],
+    '18' AS group_no,
+    'A' AS dept_no
+FROM dbo.A_STUDENT s
+JOIN dbo.A_ACCOUNT a ON a.account_name = s.linked_account;
+GO
+
+CREATE VIEW dbo.vw_hw4_courses
+AS
+SELECT
+    course_no AS course_id,
+    course_name AS course_name,
+    credit_text AS credit,
+    teacher_name AS teacher_name,
+    teaching_place AS location,
+    shared_flag AS share_flag,
+    CAST(CAST(credit_text AS TINYINT) * 16 AS VARCHAR(10)) AS class_hours,
+    '0' AS practice_hours,
+    '18' AS group_no,
+    'A' AS dept_no
+FROM dbo.A_COURSE;
+GO
+
+CREATE VIEW dbo.vw_hw4_sc
+AS
+SELECT
+    course_no AS course_id,
+    student_no AS student_id,
+    score_text AS score,
+    '18' AS group_no,
+    'A' AS dept_no
+FROM dbo.A_SELECTION;
 GO
 
 SELECT

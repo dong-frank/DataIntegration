@@ -23,29 +23,44 @@ import org.springframework.stereotype.Service;
 public class RoutedAcademicDataService implements AcademicDataService {
 
     private final SqlServerCollegeADataService collegeAService;
-    private final MockAcademicDataService fallbackService;
+    private final OracleCollegeBDataService collegeBService;
+    private final MySqlCollegeCDataService collegeCService;
 
     public RoutedAcademicDataService(
         SqlServerCollegeADataService collegeAService,
-        MockAcademicDataService fallbackService
+        OracleCollegeBDataService collegeBService,
+        MySqlCollegeCDataService collegeCService
     ) {
         this.collegeAService = collegeAService;
-        this.fallbackService = fallbackService;
+        this.collegeBService = collegeBService;
+        this.collegeCService = collegeCService;
     }
 
     @Override
     public List<StudentRecord> students(CollegeCode college) {
-        return college == CollegeCode.A ? collegeAService.students() : fallbackService.students(college);
+        return switch (college) {
+            case A -> collegeAService.students();
+            case B -> collegeBService.students();
+            case C -> collegeCService.students();
+        };
     }
 
     @Override
     public List<CourseRecord> courses(CollegeCode college) {
-        return college == CollegeCode.A ? collegeAService.courses() : fallbackService.courses(college);
+        return switch (college) {
+            case A -> collegeAService.courses();
+            case B -> collegeBService.courses();
+            case C -> collegeCService.courses();
+        };
     }
 
     @Override
     public List<EnrollmentRecord> enrollments(CollegeCode college) {
-        return college == CollegeCode.A ? collegeAService.enrollments() : fallbackService.enrollments(college);
+        return switch (college) {
+            case A -> collegeAService.enrollments();
+            case B -> collegeBService.enrollments();
+            case C -> collegeCService.enrollments();
+        };
     }
 
     @Override
@@ -71,7 +86,27 @@ public class RoutedAcademicDataService implements AcademicDataService {
             }
             return collegeAService.createEnrollment(request);
         }
-        return fallbackService.createEnrollment(request);
+        if (request.courseCollege() == CollegeCode.B) {
+            if (request.studentCollege() != CollegeCode.B) {
+                StudentRecord sourceStudent = students(request.studentCollege()).stream()
+                    .filter(student -> student.id().equals(request.studentId()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("未找到源学院学生: " + request.studentId()));
+                return collegeBService.createImportedEnrollment(request, sourceStudent);
+            }
+            return collegeBService.createEnrollment(request);
+        }
+        if (request.courseCollege() == CollegeCode.C) {
+            if (request.studentCollege() != CollegeCode.C) {
+                StudentRecord sourceStudent = students(request.studentCollege()).stream()
+                    .filter(student -> student.id().equals(request.studentId()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("未找到源学院学生: " + request.studentId()));
+                return collegeCService.createImportedEnrollment(request, sourceStudent);
+            }
+            return collegeCService.createEnrollment(request);
+        }
+        throw new IllegalArgumentException("不支持的目标学院: " + request.courseCollege());
     }
 
     @Override
@@ -80,7 +115,15 @@ public class RoutedAcademicDataService implements AcademicDataService {
         if (collegeAResult.withdrawn()) {
             return collegeAResult;
         }
-        return fallbackService.withdraw(enrollmentId);
+        WithdrawalResult collegeBResult = collegeBService.withdraw(enrollmentId);
+        if (collegeBResult.withdrawn()) {
+            return collegeBResult;
+        }
+        WithdrawalResult collegeCResult = collegeCService.withdraw(enrollmentId);
+        if (collegeCResult.withdrawn()) {
+            return collegeCResult;
+        }
+        return new WithdrawalResult(enrollmentId, false, null);
     }
 
     @Override

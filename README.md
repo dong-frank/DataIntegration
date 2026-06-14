@@ -2,10 +2,10 @@
 
 ## 技术栈
 
-- 后端：Spring Boot 3.3、Java 17、Jackson XML、JUnit 5。
+- 后端：Spring Boot 3.3、Java 17、Jackson XML、JAXP XSLT、JUnit 5。
 - 前端：React 18、Vite、TypeScript、Recharts、lucide-react。
 - 数据库目标：学院 A / SQL Server，学院 B / Oracle，学院 C / MySQL。
-- 集成方式：学院适配器导出/导入统一 XML，集成服务器负责共享课程、跨院选课、退课和统计。
+- 集成方式：学院适配器导出/导入统一 XML，集成服务器负责 XSD 校验、XSLT 转换、共享课程、跨院选课、退课和统计。
 
 ## 环境准备
 
@@ -34,7 +34,7 @@ mvn spring-boot:run
 
 后端默认端口：`http://127.0.0.1:8080`
 
-默认数据模式是 `mock`，所有学院都使用内存示例数据。学院 A 的 SQL Server 适配器已经接入；想让学院 A 读取真实 SQL Server 时，先执行 `database/sqlserver/init.sql`，再用以下方式启动：
+默认数据模式是 `mock`，所有学院都使用内存示例数据。想让 A/B/C 三院读取真实数据库时，先分别执行 `database/sqlserver/init.sql`、`database/oracle/init.sql`、`database/mysql/init.sql`，再用以下方式启动：
 
 也可以在 `backend/.env` 中填写连接配置；后端会自动读取这个文件，真实密码不要提交到 Git。
 
@@ -47,7 +47,9 @@ mvn spring-boot:run
 `APP_DATA_MODE=database` 当前行为：
 
 - 学院 A：读取 SQL Server 视图 `dbo.vw_adapter_students`、`dbo.vw_adapter_courses`、`dbo.vw_adapter_enrollments`。
-- 学院 B/C：暂时继续读取 mock 数据，等待 Oracle/MySQL 适配器接入。
+- 学院 B：读取 Oracle 视图 `vw_adapter_students`、`vw_adapter_courses`、`vw_adapter_enrollments`。
+- 学院 C：读取 MySQL 视图 `vw_adapter_students`、`vw_adapter_courses`、`vw_adapter_enrollments`。
+- 跨院选课写回会落到目标学院的导入学生表和导入选课表，避免破坏各院原始外键结构。
 
 常用接口：
 
@@ -55,7 +57,12 @@ mvn spring-boot:run
 - `POST /api/auth/login`
 - `GET /api/college/A/students`
 - `GET /api/integration/stats`
-- `GET /api/xml/A/students`
+- `GET /api/xml/{college}/students` | `courses` | `enrollments`
+- `GET /api/integration/shared-courses/xml?source=B&target=A`（共享课程统一 XML 经 XSLT 转目标学院格式）
+- `POST /api/integration/enrollments/xml`（`Content-Type: application/xml` 导入跨院选课）
+- `POST /api/integration/withdrawals/xml`（`Content-Type: application/xml` 导入退选请求）
+
+XML 契约与 curl 演示见 `docs/XML契约与演示.md`。
 
 ## 启动前端
 
@@ -99,5 +106,8 @@ npm run build
 - 分工计划：`docs/分工计划.md`
 - 流程图草稿：`docs/流程图草稿.md`
 - 学院 A SQL Server 适配：`docs/学院A-SQLServer后端适配说明.md`
+- 学院 B Oracle 字段映射：`docs/学院B字段映射说明.md`
 - 数据库说明：`database/README.md`
 - XML 契约：`backend/src/main/resources/academic-integration.xsd`
+- XSLT 转换：`backend/src/main/resources/xslt/`
+- PDF 实现对照：`docs/PDF实现对照清单.md`

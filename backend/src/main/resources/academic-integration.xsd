@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+  <!-- 学院代码：与 CollegeCode 枚举一致 -->
+  <xs:simpleType name="collegeCodeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="A"/>
+      <xs:enumeration value="B"/>
+      <xs:enumeration value="C"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- 学生：students/student -->
   <xs:complexType name="studentType">
     <xs:sequence>
       <xs:element name="id" type="xs:string"/>
@@ -9,22 +21,77 @@
     </xs:sequence>
   </xs:complexType>
 
+  <!-- 课程：classes/class（time=课时，score=学分） -->
   <xs:complexType name="classType">
     <xs:sequence>
       <xs:element name="id" type="xs:string"/>
       <xs:element name="name" type="xs:string"/>
-      <xs:element name="time" type="xs:unsignedByte"/>
-      <xs:element name="score" type="xs:unsignedByte"/>
+      <xs:element name="time" type="xs:positiveInteger"/>
+      <xs:element name="score" type="xs:positiveInteger"/>
       <xs:element name="teacher" type="xs:string"/>
       <xs:element name="location" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="choiceType">
+  <!-- 选课导出：choices/choice（本院 sid/cid/score） -->
+  <xs:complexType name="choiceExportType">
     <xs:sequence>
       <xs:element name="sid" type="xs:string"/>
       <xs:element name="cid" type="xs:string"/>
       <xs:element name="score" type="xs:unsignedByte"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- 选课导入：choices/choice（跨院四元组，可带成绩） -->
+  <xs:complexType name="choiceImportType">
+    <xs:sequence>
+      <xs:element name="studentCollege" type="collegeCodeType"/>
+      <xs:element name="studentId" type="xs:string"/>
+      <xs:element name="courseCollege" type="collegeCodeType"/>
+      <xs:element name="courseId" type="xs:string"/>
+      <xs:element name="score" type="xs:unsignedByte" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="choiceType">
+    <xs:choice>
+      <xs:group ref="choiceExportGroup"/>
+      <xs:group ref="choiceImportGroup"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:group name="choiceExportGroup">
+    <xs:sequence>
+      <xs:element name="sid" type="xs:string"/>
+      <xs:element name="cid" type="xs:string"/>
+      <xs:element name="score" type="xs:unsignedByte"/>
+    </xs:sequence>
+  </xs:group>
+
+  <xs:group name="choiceImportGroup">
+    <xs:sequence>
+      <xs:element name="studentCollege" type="collegeCodeType"/>
+      <xs:element name="studentId" type="xs:string"/>
+      <xs:element name="courseCollege" type="collegeCodeType"/>
+      <xs:element name="courseId" type="xs:string"/>
+      <xs:element name="score" type="xs:unsignedByte" minOccurs="0"/>
+    </xs:sequence>
+  </xs:group>
+
+  <!-- 跨院选课请求：enrollmentRequests/enrollmentRequest -->
+  <xs:complexType name="enrollmentRequestType">
+    <xs:sequence>
+      <xs:element name="studentCollege" type="collegeCodeType"/>
+      <xs:element name="studentId" type="xs:string"/>
+      <xs:element name="courseCollege" type="collegeCodeType"/>
+      <xs:element name="courseId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- 集成环境退选请求：withdrawRequests/withdrawRequest -->
+  <xs:complexType name="withdrawRequestType">
+    <xs:sequence>
+      <xs:element name="enrollmentId" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -48,6 +115,22 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="choice" type="choiceType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="enrollmentRequests">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="enrollmentRequest" type="enrollmentRequestType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="withdrawRequests">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="withdrawRequest" type="withdrawRequestType" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
