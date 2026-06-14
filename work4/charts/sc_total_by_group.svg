@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="884" viewBox="0 0 1280 884">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40" y="44" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#172033">各组 sc 表提交数量</text>
+<text x="40" y="74" font-family="Arial, sans-serif" font-size="15" fill="#64748b">按 group_no 汇总 row_count，参考线为标准值 750</text>
+<line x1="120.0" y1="96" x2="120.0" y2="804" stroke="#d9e2ec" stroke-width="1"/>
+<text x="120.0" y="832" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">0</text>
+<line x1="329.6" y1="96" x2="329.6" y2="804" stroke="#d9e2ec" stroke-width="1"/>
+<text x="329.6" y="832" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">951</text>
+<line x1="539.2" y1="96" x2="539.2" y2="804" stroke="#d9e2ec" stroke-width="1"/>
+<text x="539.2" y="832" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">1902</text>
+<line x1="748.8" y1="96" x2="748.8" y2="804" stroke="#d9e2ec" stroke-width="1"/>
+<text x="748.8" y="832" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">2853</text>
+<line x1="958.4" y1="96" x2="958.4" y2="804" stroke="#d9e2ec" stroke-width="1"/>
+<text x="958.4" y="832" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">3804</text>
+<line x1="1168.0" y1="96" x2="1168.0" y2="804" stroke="#d9e2ec" stroke-width="1"/>
+<text x="1168.0" y="832" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">4755</text>
+<line x1="285.3" y1="84" x2="285.3" y2="804" stroke="#111827" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="293.3" y="78" font-family="Arial, sans-serif" font-size="13" fill="#111827">正常值 750</text>
+<text x="102" y="124" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">1组</text>
+<rect x="120" y="109" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="124" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="152" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">2组</text>
+<rect x="120" y="137" width="1048.0" height="18" rx="3" fill="#3b82f6"/>
+<text x="1176.0" y="152" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">4755</text>
+<text x="102" y="180" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">3组</text>
+<rect x="120" y="165" width="115.9" height="18" rx="3" fill="#3b82f6"/>
+<text x="243.9" y="180" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">526</text>
+<text x="102" y="208" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">4组</text>
+<rect x="120" y="193" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="208" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="236" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">5组</text>
+<rect x="120" y="221" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="236" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="264" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">6组</text>
+<rect x="120" y="249" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="264" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="292" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">7组</text>
+<rect x="120" y="277" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="292" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="320" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">8组</text>
+<rect x="120" y="305" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="320" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="348" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">9组</text>
+<rect x="120" y="333" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="348" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="376" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">10组</text>
+<rect x="120" y="361" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="376" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="404" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">11组</text>
+<rect x="120" y="389" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="404" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="432" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">12组</text>
+<rect x="120" y="417" width="165.7" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.7" y="432" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">752</text>
+<text x="102" y="460" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">14组</text>
+<rect x="120" y="445" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="460" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="488" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">15组</text>
+<rect x="120" y="473" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="488" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="516" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">16组</text>
+<rect x="120" y="501" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="516" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="544" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">17组</text>
+<rect x="120" y="529" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="544" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="572" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#172033">18组</text>
+<rect x="120" y="557" width="165.3" height="18" rx="3" fill="#dc2626"/>
+<text x="293.3" y="572" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#172033">750</text>
+<text x="102" y="600" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">19组</text>
+<rect x="120" y="585" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="600" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="628" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">20组</text>
+<rect x="120" y="613" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="628" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="656" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">21组</text>
+<rect x="120" y="641" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="656" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="684" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">22组</text>
+<rect x="120" y="669" width="166.0" height="18" rx="3" fill="#3b82f6"/>
+<text x="294.0" y="684" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">753</text>
+<text x="102" y="712" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">23组</text>
+<rect x="120" y="697" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="712" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="102" y="740" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">25组</text>
+<rect x="120" y="725" width="110.2" height="18" rx="3" fill="#3b82f6"/>
+<text x="238.2" y="740" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">500</text>
+<text x="102" y="768" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">27组</text>
+<rect x="120" y="753" width="165.5" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.5" y="768" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">751</text>
+<text x="102" y="796" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">28组</text>
+<rect x="120" y="781" width="165.3" height="18" rx="3" fill="#3b82f6"/>
+<text x="293.3" y="796" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#172033">750</text>
+<text x="120" y="860" font-family="Arial, sans-serif" font-size="12" fill="#64748b">红色为本组 18 组；虚线为课程要求的标准提交数量。</text>
+</svg>

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>各组数据提交规模与院系分布可视化</title>
+  <style>
+    :root {
+      --text: #172033;
+      --muted: #64748b;
+      --line: #d9e2ec;
+      --panel: #f8fafc;
+      --accent: #dc2626;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: #ffffff;
+    }
+    main {
+      width: min(1180px, calc(100vw - 48px));
+      margin: 32px auto 56px;
+    }
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 28px;
+      margin: 0 0 10px;
+    }
+    h2 {
+      font-size: 20px;
+      margin: 28px 0 12px;
+    }
+    p {
+      line-height: 1.65;
+      margin: 8px 0;
+    }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 20px 0 10px;
+    }
+    .kpi {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .kpi .label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .kpi .value {
+      font-size: 28px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+    figure {
+      margin: 18px 0 28px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+    figure img {
+      width: 100%;
+      display: block;
+    }
+    figcaption {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      padding: 10px 14px;
+      background: var(--panel);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      text-align: right;
+    }
+    th:first-child, td:first-child,
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+    }
+    th {
+      background: var(--panel);
+    }
+    .note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .accent {
+      color: var(--accent);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>各组数据提交规模与院系分布可视化分析</h1>
+    <p>数据来源为服务器 hw4 数据库导出的 student、course、sc 三张表，重点展示各组提交数量差异和 A/B/C 院系分布。</p>
+    <p class="note">红色高亮为本组 18 组；虚线为作业标准规模：student=150、course=30、sc=750。</p>
+  </header>
+
+  <section class="kpis">
+    <div class="kpi"><div class="label">服务器 student 总量</div><div class="value">3929</div></div>
+    <div class="kpi"><div class="label">服务器 course 总量</div><div class="value">1002</div></div>
+    <div class="kpi"><div class="label">服务器 sc 总量</div><div class="value">22287</div></div>
+  </section>
+  <section class="kpis">
+    <div class="kpi"><div class="label">18 组 student</div><div class="value">150</div></div>
+    <div class="kpi"><div class="label">18 组 course</div><div class="value">30</div></div>
+    <div class="kpi"><div class="label">18 组 sc</div><div class="value">750</div></div>
+  </section>
+
+  <h2>1. 各组提交数量对比</h2>
+  <figure>
+    <img src="charts/student_total_by_group.svg" alt="各组 student 表提交数量柱状图">
+    <figcaption>图 1：student 表提交规模。标准组通常为 150 行，18 组符合标准。</figcaption>
+  </figure>
+  <figure>
+    <img src="charts/course_total_by_group.svg" alt="各组 course 表提交数量柱状图">
+    <figcaption>图 2：course 表提交规模。标准组通常为 30 行，部分组课程数量明显偏高。</figcaption>
+  </figure>
+  <figure>
+    <img src="charts/sc_total_by_group.svg" alt="各组 sc 表提交数量柱状图">
+    <figcaption>图 3：sc 表提交规模。标准组通常为 750 行，第 2 组等存在明显数量异常。</figcaption>
+  </figure>
+
+  <h2>2. student 表 A/B/C 院系分布</h2>
+  <figure>
+    <img src="charts/student_dept_stacked_by_group.svg" alt="各组 student 表 A/B/C 院系堆叠柱状图">
+    <figcaption>图 4：student 表按院系堆叠。18 组 A/B/C 各 50 行，结构均衡。</figcaption>
+  </figure>
+
+  <h2>3. 数量异常组初筛</h2>
+  <p>下表列出与标准提交规模偏差最大的前 12 条记录。完整明细见 <code>distribution_deviations.csv</code>。</p>
+  <table>
+    <thead><tr><th>表</th><th>组号</th><th>实际数量</th><th>标准数量</th><th>偏差</th></tr></thead>
+    <tbody><tr><td>sc</td><td>2</td><td>4755</td><td>750</td><td>+4005</td></tr>
+<tr><td>course</td><td>2</td><td>312</td><td>30</td><td>+282</td></tr>
+<tr><td>sc</td><td>25</td><td>500</td><td>750</td><td>-250</td></tr>
+<tr><td>sc</td><td>3</td><td>526</td><td>750</td><td>-224</td></tr>
+<tr><td>student</td><td>2</td><td>374</td><td>150</td><td>+224</td></tr>
+<tr><td>student</td><td>221250099</td><td>1</td><td>150</td><td>-149</td></tr>
+<tr><td>student</td><td>25</td><td>100</td><td>150</td><td>-50</td></tr>
+<tr><td>course</td><td>8</td><td>10</td><td>30</td><td>-20</td></tr>
+<tr><td>course</td><td>23</td><td>20</td><td>30</td><td>-10</td></tr>
+<tr><td>sc</td><td>22</td><td>753</td><td>750</td><td>+3</td></tr>
+<tr><td>student</td><td>22</td><td>153</td><td>150</td><td>+3</td></tr>
+<tr><td>sc</td><td>12</td><td>752</td><td>750</td><td>+2</td></tr></tbody>
+  </table>
+
+  <h2>4. 可写入报告的结论</h2>
+  <p>从提交规模看，多数组的数据量接近作业标准，但存在少量组提交量明显偏离。<span class="accent">18 组</span>在 student、course、sc 三张表上分别为 150、30、750 行，且 student 表 A/B/C 三个院系均为 50 行，符合标准提交规模。</p>
+  <p>第 2 组在三张表上均明显高于标准值，是后续异常数据分析应重点关注的对象。个别组存在缺少某些院系或组号异常的情况，可交由异常检测成员继续深入。</p>
+</main>
+</body>
+</html>

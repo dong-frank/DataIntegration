@@ -16,6 +16,9 @@ GO
 USE college_a;
 GO
 
+IF OBJECT_ID(N'dbo.vw_hw4_sc', N'V') IS NOT NULL DROP VIEW dbo.vw_hw4_sc;
+IF OBJECT_ID(N'dbo.vw_hw4_courses', N'V') IS NOT NULL DROP VIEW dbo.vw_hw4_courses;
+IF OBJECT_ID(N'dbo.vw_hw4_students', N'V') IS NOT NULL DROP VIEW dbo.vw_hw4_students;
 IF OBJECT_ID(N'dbo.vw_adapter_enrollments', N'V') IS NOT NULL DROP VIEW dbo.vw_adapter_enrollments;
 IF OBJECT_ID(N'dbo.vw_adapter_courses', N'V') IS NOT NULL DROP VIEW dbo.vw_adapter_courses;
 IF OBJECT_ID(N'dbo.vw_adapter_students', N'V') IS NOT NULL DROP VIEW dbo.vw_adapter_students;
@@ -239,6 +242,48 @@ SELECT
     status_code AS status,
     score_text AS score
 FROM dbo.A_IMPORTED_SELECTION;
+GO
+
+CREATE VIEW dbo.vw_hw4_students
+AS
+SELECT
+    s.student_no AS student_id,
+    s.student_name AS student_name,
+    s.gender_name AS gender,
+    s.department_name AS department,
+    s.linked_account AS account,
+    a.password_code AS [password],
+    '18' AS group_no,
+    'A' AS dept_no
+FROM dbo.A_STUDENT s
+JOIN dbo.A_ACCOUNT a ON a.account_name = s.linked_account;
+GO
+
+CREATE VIEW dbo.vw_hw4_courses
+AS
+SELECT
+    course_no AS course_id,
+    course_name AS course_name,
+    credit_text AS credit,
+    teacher_name AS teacher_name,
+    teaching_place AS location,
+    shared_flag AS share_flag,
+    CAST(CAST(credit_text AS TINYINT) * 16 AS VARCHAR(10)) AS class_hours,
+    '0' AS practice_hours,
+    '18' AS group_no,
+    'A' AS dept_no
+FROM dbo.A_COURSE;
+GO
+
+CREATE VIEW dbo.vw_hw4_sc
+AS
+SELECT
+    course_no AS course_id,
+    student_no AS student_id,
+    score_text AS score,
+    '18' AS group_no,
+    'A' AS dept_no
+FROM dbo.A_SELECTION;
 GO
 
 SELECT
