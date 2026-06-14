@@ -1,0 +1,27 @@
+{
+  "exported_at": "2026-06-14T11:28:43",
+  "source": "10.60.254.44:3306/hw4",
+  "tables": {
+    "student": {
+      "rows": 3929,
+      "file": "/Users/dong/2026/02_代码项目/data_integration/exports/hw4_20260614/student.csv",
+      "mysql_warning": "mysql: [Warning] Using a password on the command line interface can be insecure."
+    },
+    "course": {
+      "rows": 1002,
+      "file": "/Users/dong/2026/02_代码项目/data_integration/exports/hw4_20260614/course.csv",
+      "mysql_warning": "mysql: [Warning] Using a password on the command line interface can be insecure."
+    },
+    "sc": {
+      "rows": 22287,
+      "file": "/Users/dong/2026/02_代码项目/data_integration/exports/hw4_20260614/sc.csv",
+      "mysql_warning": "mysql: [Warning] Using a password on the command line interface can be insecure."
+    }
+  },
+  "notes": [
+    "Read-only export from server; no INSERT/UPDATE/DELETE executed.",
+    "CSV files are UTF-8 BOM encoded for Excel."
+  ],
+  "summary_file": "/Users/dong/2026/02_代码项目/data_integration/exports/hw4_20260614/group_dept_summary.csv",
+  "quality_snapshot_file": "/Users/dong/2026/02_代码项目/data_integration/exports/hw4_20260614/quality_snapshot.csv"
+}

@@ -11,6 +11,9 @@ USE college_c;
 DROP VIEW IF EXISTS vw_adapter_enrollments;
 DROP VIEW IF EXISTS vw_adapter_courses;
 DROP VIEW IF EXISTS vw_adapter_students;
+DROP VIEW IF EXISTS vw_hw4_sc;
+DROP VIEW IF EXISTS vw_hw4_courses;
+DROP VIEW IF EXISTS vw_hw4_students;
 DROP TABLE IF EXISTS C_IMPORTED_SELECTION;
 DROP TABLE IF EXISTS C_IMPORTED_STUDENT;
 DROP TABLE IF EXISTS C_SELECTION;
@@ -440,5 +443,41 @@ SELECT
     status_code                          AS status,
     Grd                                  AS score
 FROM C_IMPORTED_SELECTION;
+
+-- HW4 服务器导出视图：字段与服务器 MySQL student/course/sc 表保持一致
+CREATE VIEW vw_hw4_students AS
+SELECT
+    Sno                                  AS student_id,
+    Snm                                  AS student_name,
+    Sex                                  AS gender,
+    Sde                                  AS department,
+    Sno                                  AS account,
+    Pwd                                  AS password,
+    '18'                                 AS group_no,
+    'C'                                  AS dept_no
+FROM C_STUDENT;
+
+CREATE VIEW vw_hw4_courses AS
+SELECT
+    Cno                                  AS course_id,
+    Cnm                                  AS course_name,
+    CAST(Cpt AS CHAR)                    AS credit,
+    Tec                                  AS teacher_name,
+    Pla                                  AS location,
+    Share                                AS share_flag,
+    CAST(Ctm AS CHAR)                    AS class_hours,
+    '0'                                  AS practice_hours,
+    '18'                                 AS group_no,
+    'C'                                  AS dept_no
+FROM C_COURSE;
+
+CREATE VIEW vw_hw4_sc AS
+SELECT
+    Cno                                  AS course_id,
+    Sno                                  AS student_id,
+    CAST(Grd AS CHAR)                    AS score,
+    '18'                                 AS group_no,
+    'C'                                  AS dept_no
+FROM C_SELECTION;
 
 -- 数据导入完成
