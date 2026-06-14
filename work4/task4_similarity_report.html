@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Group Similarity Analysis — Group 18</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; margin: 40px; color: #333; }
+  h1 { color: #2c3e50; }
+  h2 { color: #2980b9; border-bottom: 2px solid #2980b9; padding-bottom: 4px; }
+  h3 { color: #27ae60; }
+  table { border-collapse: collapse; margin-bottom: 20px; width: 100%; max-width: 800px; }
+  th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; font-size: 13px; }
+  th { background: #f0f4f8; }
+  tr:nth-child(even) { background: #fafafa; }
+  table.cmp td:nth-child(2), table.cmp td:nth-child(3) { text-align: right; }
+  .badge { display:inline-block; background:#2980b9; color:#fff;
+            border-radius:4px; padding:2px 8px; font-size:12px; }
+  .summary { background:#eaf4fb; border-left:4px solid #2980b9;
+              padding:12px 20px; margin:20px 0; border-radius:4px; }
+</style>
+</head>
+<body>
+<h1>Group Similarity Analysis</h1>
+<div class="summary">
+  <b>Our group:</b> <span class="badge">Group 18</span> &nbsp;
+  <b>Most similar group:</b> <span class="badge">Group 8</span>
+  &nbsp; (distance = 2.3621)<br><br>
+  Analysis dimensions: 18 features across student composition,
+  course structure, and score distribution.
+  Distance metric: standardised Euclidean distance (z-score normalised).
+</div>
+
+<h2>Full Ranking</h2>
+<table>
+<thead><tr><th>Rank</th><th>Group</th><th>Distance (smaller = more similar)</th></tr></thead>
+<tbody><tr><td>1</td><td><b>8</b></td><td>2.3621 <div style='display:inline-block;width:24%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>2</td><td><b>10</b></td><td>2.4900 <div style='display:inline-block;width:26%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>3</td><td><b>7</b></td><td>2.7916 <div style='display:inline-block;width:29%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>4</td><td><b>9</b></td><td>3.0035 <div style='display:inline-block;width:31%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>5</td><td><b>27</b></td><td>3.1839 <div style='display:inline-block;width:33%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>6</td><td><b>6</b></td><td>3.3583 <div style='display:inline-block;width:35%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>7</td><td><b>23</b></td><td>3.7368 <div style='display:inline-block;width:39%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>8</td><td><b>1</b></td><td>3.8886 <div style='display:inline-block;width:41%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>9</td><td><b>21</b></td><td>3.9769 <div style='display:inline-block;width:41%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>10</td><td><b>11</b></td><td>4.0140 <div style='display:inline-block;width:42%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>11</td><td><b>15</b></td><td>4.0514 <div style='display:inline-block;width:42%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>12</td><td><b>3</b></td><td>4.1078 <div style='display:inline-block;width:43%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>13</td><td><b>14</b></td><td>4.4873 <div style='display:inline-block;width:47%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>14</td><td><b>25</b></td><td>5.0512 <div style='display:inline-block;width:53%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>15</td><td><b>17</b></td><td>5.7422 <div style='display:inline-block;width:60%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>16</td><td><b>16</b></td><td>6.2868 <div style='display:inline-block;width:66%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>17</td><td><b>20</b></td><td>6.6080 <div style='display:inline-block;width:69%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>18</td><td><b>4</b></td><td>7.1098 <div style='display:inline-block;width:75%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>19</td><td><b>22</b></td><td>7.2444 <div style='display:inline-block;width:76%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>20</td><td><b>28</b></td><td>7.2749 <div style='display:inline-block;width:76%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>21</td><td><b>5</b></td><td>7.3279 <div style='display:inline-block;width:77%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>22</td><td><b>12</b></td><td>7.4216 <div style='display:inline-block;width:78%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>23</td><td><b>19</b></td><td>8.3470 <div style='display:inline-block;width:88%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+<tr><td>24</td><td><b>2</b></td><td>9.4765 <div style='display:inline-block;width:100%;height:10px;background:#3498db;vertical-align:middle'></div></td></tr>
+</tbody>
+</table>
+
+<h2>Top-5 Detailed Comparison with Group 18</h2>
+<h3>#1 Group 8 &nbsp;<small style='color:#666;font-weight:normal'>distance = 2.3621</small></h3>
+<table class='cmp'>
+<thead><tr><th>Feature</th><th>Group 18 (ours)</th><th>Group 8</th><th>Diff</th></tr></thead>
+<tbody><tr><td>stu_count</td><td>150.000</td><td>150.000</td><td style=''>+0.000</td></tr>
+<tr><td>gender_ratio_male</td><td>0.500</td><td>0.520</td><td style=''>+0.020</td></tr>
+<tr><td>course_count</td><td>30.000</td><td>10.000</td><td style='color:#c0392b;'>-20.000</td></tr>
+<tr><td>avg_credit</td><td>3.000</td><td>3.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_class_hours</td><td>48.000</td><td>48.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_practice_hours</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>share_ratio</td><td>0.000</td><td>0.600</td><td style='color:#c0392b;'>+0.600</td></tr>
+<tr><td>avg_score</td><td>82.000</td><td>83.456</td><td style=''>+1.456</td></tr>
+<tr><td>std_score</td><td>7.216</td><td>9.121</td><td style=''>+1.905</td></tr>
+<tr><td>pass_rate</td><td>1.000</td><td>1.000</td><td style=''>+0.000</td></tr>
+<tr><td>score_q25</td><td>76.000</td><td>76.000</td><td style=''>+0.000</td></tr>
+<tr><td>score_q75</td><td>88.000</td><td>91.000</td><td style=''>+3.000</td></tr>
+<tr><td>bin_fail</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>bin_60s</td><td>0.000</td><td>0.060</td><td style=''>+0.060</td></tr>
+<tr><td>bin_70s</td><td>0.400</td><td>0.320</td><td style=''>-0.080</td></tr>
+<tr><td>bin_80s</td><td>0.400</td><td>0.320</td><td style=''>-0.080</td></tr>
+<tr><td>bin_90s</td><td>0.200</td><td>0.300</td><td style=''>+0.100</td></tr>
+<tr><td>enrollment_density</td><td>5.000</td><td>5.000</td><td style=''>+0.000</td></tr>
+</tbody></table>
+<h3>#2 Group 10 &nbsp;<small style='color:#666;font-weight:normal'>distance = 2.4900</small></h3>
+<table class='cmp'>
+<thead><tr><th>Feature</th><th>Group 18 (ours)</th><th>Group 10</th><th>Diff</th></tr></thead>
+<tbody><tr><td>stu_count</td><td>150.000</td><td>150.000</td><td style=''>+0.000</td></tr>
+<tr><td>gender_ratio_male</td><td>0.500</td><td>0.500</td><td style=''>+0.000</td></tr>
+<tr><td>course_count</td><td>30.000</td><td>30.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_credit</td><td>3.000</td><td>2.900</td><td style=''>-0.100</td></tr>
+<tr><td>avg_class_hours</td><td>48.000</td><td>45.600</td><td style=''>-2.400</td></tr>
+<tr><td>avg_practice_hours</td><td>0.000</td><td>2.900</td><td style='color:#c0392b;'>+2.900</td></tr>
+<tr><td>share_ratio</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_score</td><td>82.000</td><td>80.036</td><td style=''>-1.964</td></tr>
+<tr><td>std_score</td><td>7.216</td><td>11.073</td><td style='color:#c0392b;'>+3.857</td></tr>
+<tr><td>pass_rate</td><td>1.000</td><td>1.000</td><td style=''>+0.000</td></tr>
+<tr><td>score_q25</td><td>76.000</td><td>71.000</td><td style=''>-5.000</td></tr>
+<tr><td>score_q75</td><td>88.000</td><td>90.000</td><td style=''>+2.000</td></tr>
+<tr><td>bin_fail</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>bin_60s</td><td>0.000</td><td>0.220</td><td style=''>+0.220</td></tr>
+<tr><td>bin_70s</td><td>0.400</td><td>0.271</td><td style=''>-0.129</td></tr>
+<tr><td>bin_80s</td><td>0.400</td><td>0.256</td><td style=''>-0.144</td></tr>
+<tr><td>bin_90s</td><td>0.200</td><td>0.253</td><td style=''>+0.053</td></tr>
+<tr><td>enrollment_density</td><td>5.000</td><td>5.000</td><td style=''>+0.000</td></tr>
+</tbody></table>
+<h3>#3 Group 7 &nbsp;<small style='color:#666;font-weight:normal'>distance = 2.7916</small></h3>
+<table class='cmp'>
+<thead><tr><th>Feature</th><th>Group 18 (ours)</th><th>Group 7</th><th>Diff</th></tr></thead>
+<tbody><tr><td>stu_count</td><td>150.000</td><td>150.000</td><td style=''>+0.000</td></tr>
+<tr><td>gender_ratio_male</td><td>0.500</td><td>0.527</td><td style=''>+0.027</td></tr>
+<tr><td>course_count</td><td>30.000</td><td>30.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_credit</td><td>3.000</td><td>3.133</td><td style=''>+0.133</td></tr>
+<tr><td>avg_class_hours</td><td>48.000</td><td>47.367</td><td style=''>-0.633</td></tr>
+<tr><td>avg_practice_hours</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>share_ratio</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_score</td><td>82.000</td><td>80.051</td><td style=''>-1.949</td></tr>
+<tr><td>std_score</td><td>7.216</td><td>11.622</td><td style='color:#c0392b;'>+4.406</td></tr>
+<tr><td>pass_rate</td><td>1.000</td><td>1.000</td><td style=''>+0.000</td></tr>
+<tr><td>score_q25</td><td>76.000</td><td>70.000</td><td style=''>-6.000</td></tr>
+<tr><td>score_q75</td><td>88.000</td><td>90.000</td><td style=''>+2.000</td></tr>
+<tr><td>bin_fail</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>bin_60s</td><td>0.000</td><td>0.241</td><td style=''>+0.241</td></tr>
+<tr><td>bin_70s</td><td>0.400</td><td>0.245</td><td style=''>-0.155</td></tr>
+<tr><td>bin_80s</td><td>0.400</td><td>0.243</td><td style=''>-0.157</td></tr>
+<tr><td>bin_90s</td><td>0.200</td><td>0.271</td><td style=''>+0.071</td></tr>
+<tr><td>enrollment_density</td><td>5.000</td><td>5.000</td><td style=''>+0.000</td></tr>
+</tbody></table>
+<h3>#4 Group 9 &nbsp;<small style='color:#666;font-weight:normal'>distance = 3.0035</small></h3>
+<table class='cmp'>
+<thead><tr><th>Feature</th><th>Group 18 (ours)</th><th>Group 9</th><th>Diff</th></tr></thead>
+<tbody><tr><td>stu_count</td><td>150.000</td><td>150.000</td><td style=''>+0.000</td></tr>
+<tr><td>gender_ratio_male</td><td>0.500</td><td>0.500</td><td style=''>+0.000</td></tr>
+<tr><td>course_count</td><td>30.000</td><td>30.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_credit</td><td>3.000</td><td>3.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_class_hours</td><td>48.000</td><td>48.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_practice_hours</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>share_ratio</td><td>0.000</td><td>0.500</td><td style=''>+0.500</td></tr>
+<tr><td>avg_score</td><td>82.000</td><td>75.040</td><td style=''>-6.960</td></tr>
+<tr><td>std_score</td><td>7.216</td><td>11.742</td><td style='color:#c0392b;'>+4.526</td></tr>
+<tr><td>pass_rate</td><td>1.000</td><td>0.901</td><td style=''>-0.099</td></tr>
+<tr><td>score_q25</td><td>76.000</td><td>65.000</td><td style=''>-11.000</td></tr>
+<tr><td>score_q75</td><td>88.000</td><td>85.000</td><td style=''>-3.000</td></tr>
+<tr><td>bin_fail</td><td>0.000</td><td>0.099</td><td style=''>+0.099</td></tr>
+<tr><td>bin_60s</td><td>0.000</td><td>0.231</td><td style=''>+0.231</td></tr>
+<tr><td>bin_70s</td><td>0.400</td><td>0.284</td><td style=''>-0.116</td></tr>
+<tr><td>bin_80s</td><td>0.400</td><td>0.255</td><td style=''>-0.145</td></tr>
+<tr><td>bin_90s</td><td>0.200</td><td>0.132</td><td style=''>-0.068</td></tr>
+<tr><td>enrollment_density</td><td>5.000</td><td>5.000</td><td style=''>+0.000</td></tr>
+</tbody></table>
+<h3>#5 Group 27 &nbsp;<small style='color:#666;font-weight:normal'>distance = 3.1839</small></h3>
+<table class='cmp'>
+<thead><tr><th>Feature</th><th>Group 18 (ours)</th><th>Group 27</th><th>Diff</th></tr></thead>
+<tbody><tr><td>stu_count</td><td>150.000</td><td>150.000</td><td style=''>+0.000</td></tr>
+<tr><td>gender_ratio_male</td><td>0.500</td><td>0.440</td><td style=''>-0.060</td></tr>
+<tr><td>course_count</td><td>30.000</td><td>30.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_credit</td><td>3.000</td><td>3.300</td><td style=''>+0.300</td></tr>
+<tr><td>avg_class_hours</td><td>48.000</td><td>53.533</td><td style=''>+5.533</td></tr>
+<tr><td>avg_practice_hours</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>share_ratio</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>avg_score</td><td>82.000</td><td>78.655</td><td style=''>-3.345</td></tr>
+<tr><td>std_score</td><td>7.216</td><td>11.478</td><td style='color:#c0392b;'>+4.262</td></tr>
+<tr><td>pass_rate</td><td>1.000</td><td>1.000</td><td style=''>+0.000</td></tr>
+<tr><td>score_q25</td><td>76.000</td><td>69.000</td><td style=''>-7.000</td></tr>
+<tr><td>score_q75</td><td>88.000</td><td>89.000</td><td style=''>+1.000</td></tr>
+<tr><td>bin_fail</td><td>0.000</td><td>0.000</td><td style=''>+0.000</td></tr>
+<tr><td>bin_60s</td><td>0.000</td><td>0.265</td><td style=''>+0.265</td></tr>
+<tr><td>bin_70s</td><td>0.400</td><td>0.273</td><td style=''>-0.127</td></tr>
+<tr><td>bin_80s</td><td>0.400</td><td>0.230</td><td style=''>-0.170</td></tr>
+<tr><td>bin_90s</td><td>0.200</td><td>0.232</td><td style=''>+0.032</td></tr>
+<tr><td>enrollment_density</td><td>5.000</td><td>5.007</td><td style=''>+0.007</td></tr>
+</tbody></table>
+
+
+<hr>
+<p style="color:#999;font-size:12px">
+  Generated by similarity_analysis.py &nbsp;|&nbsp;
+  Data: hw4_20260614 &nbsp;|&nbsp;
+  Group 18 features: stu_count=150,
+  avg_score=82.00, pass_rate=100.00%,
+  course_count=30
+</p>
+</body>
+</html>
